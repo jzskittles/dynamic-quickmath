@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<style type="text/css">
+    
+
+</style>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>Quick Math</title>
+    <link rel="stylesheet" type="text/css" href="/css/question.css">
+
+</head>
+
+<body>
+    <div id="curvedarrow" onclick="back()"></div>
+    <div style="float:right; margin-top:10px;">
+        <h2 id="streak">0</h2>
+        <h2 style="float: right"><img src="flame.png" alt="streak flame"></h2>
+    </div>
+    <table id="probtable" style="display:block">
+        <tr>
+            <td><h2 id="part1" class="prob">123</h2></td>
+            <td><h2 id="sign" class="prob">+</h2></td>
+            <td><h2 id="part2" class="prob">123</h2></td>
+        </tr>
+    </table>
+
+    <h2 id="answer">= </h2>
+    
+    <table style="display:block">
+        <tr>
+            <td><button id="1" class="numpad" onclick="addText(this.id)">1</button></td>
+            <td><button id="2" class="numpad" onclick="addText(this.id)">2</button></td>
+            <td><button id="3" class="numpad" onclick="addText(this.id)">3</button></td>
+            <td><button id="remove" class="numpad" onclick="removeText()" style="width:60px;">&lt;</button></td>
+        </tr>
+        <tr>
+            <td><button id="4" class="numpad" onclick="addText(this.id)">4</button></td>
+            <td><button id="5" class="numpad" onclick="addText(this.id)">5</button></td>
+            <td><button id="6" class="numpad" onclick="addText(this.id)">6</button></td>
+            <td rowspan="3"><button id="enter" style="height:250px; background-color: firebrick; word-wrap: break-word;
+    font-family: monospace; width:60px" onclick="compare()">ENTER</button></td>
+        </tr>
+        <tr>
+            <td><button id="7" class="numpad" onclick="addText(this.id)">7</button></td>
+            <td><button id="8" class="numpad" onclick="addText(this.id)">8</button></td>
+            <td><button id="9" class="numpad" onclick="addText(this.id)">9</button></td>
+        </tr>
+        <tr>
+            <td colspan="3"><button id="0" class="numpad" style="width:250px;" onclick="addText(this.id)">0</button></td>
+        </tr>
+    </table>   
+    
+    <script>
+        var result=0;
+        var streaknum = 0;
+        var languages = window.location.hash.substring(1);
+        var buttons = document.getElementsByTagName("button");
+        for(i=0; i<buttons.length; i++){
+            if(buttons[i].id=="enter"){
+                if(languages=="en")
+                    buttons[i].textContent="ENTER";
+                else
+                    buttons[i].textContent="抢答";
+            }
+        }
+        function addText(clicked_id) {
+            if(document.getElementById("answer").textContent.length<12)
+                document.getElementById("answer").textContent = document.getElementById("answer").textContent + clicked_id;
+        }
+        function removeText(){
+            if(document.getElementById("answer").textContent.length>2){
+                var str = document.getElementById("answer").textContent;
+                str = str.substring(0, str.length - 1);
+                document.getElementById("answer").textContent = str;
+            }    
+        }
+        function randomNum(){
+            var a = Math.floor((Math.random() * 100) + 1);
+            var b = Math.floor((Math.random() * 100) + 1);
+
+            var c=0;
+            if(((Math.random()*100) + 1)>50)
+                c = 1;
+
+            var probtable = document.getElementById("probtable");
+            var items = probtable.getElementsByTagName("h2");
+            if(c==0){
+                items[1].textContent="+";
+                result = a+b;
+            }else{
+                items[1].textContent="-";
+                if(b>a){
+                    var m = a;
+                    a = b;
+                    b = m;
+                }
+                result = a-b;
+            }
+
+            items[0].textContent = a;
+            items[2].textContent = b;
+        }
+        function compare(){
+            var answers = document.getElementById("answer").textContent;
+            
+            if(answers.substring(2) == result){
+                streaknum++;
+            }else{
+                streaknum=0;
+            }
+            document.getElementById("streak").textContent = streaknum;
+            document.getElementById("answer").textContent = "= ";
+
+            randomNum();
+        }
+        function back(){
+            window.location.href = "index.html"+"#"+languages;
+        }
+        randomNum();
+        window.onbeforeunload = function (evt) {
+            window.location.href = "index.html"+"#"+languages;
+        }
+    </script>
+
+    <noscript>Sorry, it looks like your browser doesn't support Javascript or have it enabled.</noscript>
+
+</body>
+</html>

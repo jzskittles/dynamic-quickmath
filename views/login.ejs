@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<style type="text/css">
+    html, body {
+        min-height: 100%;
+    }
+    body {
+        margin:40px auto;
+        width:320px;
+        height:600px;
+        touch-action: manipulation;
+    }
+    .options{
+        background-color:purple;
+        color:white;
+        padding:12px;
+        text-decoration: none;
+        margin:10px;
+        outline:solid 5px black;
+        font-size:20px;
+        text-align: center;
+    }
+    .options:hover{
+        outline-width: 7px;
+    }
+    h1{
+        color:crimson;
+        font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+        font-style:italic;
+        text-align: center;
+        font-size:42px;
+    }
+    h2{
+        color:dodgerblue;
+        font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+        text-align: center;
+    }
+    a {
+        width: 100%;
+        text-align: center;
+        text-decoration: none;
+        color:white;
+    }
+    #nums{
+        width:320px;
+        height:100px;
+        overflow: hidden;
+    }
+    #leaderboard{
+        float:right;
+    }
+    .login {
+        -moz-appearance: textfield;
+        -webkit-appearance: textfield;
+        background-color: white;
+        background-color: -moz-field;
+        border: 1px solid darkgray;
+        box-shadow: 1px 1px 1px 0 lightgray inset;  
+        font: -moz-field;
+        font: -webkit-small-control;
+        margin-top: 5px;
+        padding: 3px 3px;
+        width: 310px;    
+    }   
+</style>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Quick Math</title>   
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300' rel='stylesheet' type='text/css'> 
+</head>
+
+<body>
+    <div>
+        <h1>Quick Math</h1>
+    </div>
+
+    <!--<h2 lang="en">Username</h2>
+    <h2 lang="zh">用户名</h2>
+    
+
+    <div id="username" class="login" contenteditable></div>
+
+    <h2 lang="en">Password</h2>
+    <h2 lang="zh">密码</h2>
+
+    <div id="password" class="login" contenteditable></div>
+
+    <h4 lang = "en" class="options" id="logins" onclick="login()">LOGIN</h4>
+    <h4 lang = "zh" class="options" id="logins" onclick="login()">登录</h4> -->   
+
+    <form action="/" method="post">
+        <input id="username" name="username" type="text" class="ghost-input" placeholder="Username" required>
+        <input id="password" name="password" type="text" class="ghost-input" placeholder="Password" required>
+        <input name="languages" type="radio" value="en" class="lang-input" onclick="switchlang()"> English
+        <input name="languages" type="radio" value="zh" class="lang-input" onclick="switchlang()"> 中文
+        <input type="submit" class="ghost-button" id="login" name="login" value="Login" onclick="location.href='two.ejs'"> 
+    </form>
+    
+    <% if(logging !== null){ %>
+        <p><%= logging %></p>
+    <% } %>
+
+    <% if(error !== null){ %>
+        <p><%= error %></p>
+    <% } %>
+    
+    <script>
+        var languages = window.location.hash.substring(1,3);
+        if(languages==""){
+            languages="en";
+        }
+
+        function switchlang(){
+            var language_which = document.getElementsByName("languages");
+            for(var i = 0; i < language_which.length; i++){
+                if(language_which[i].checked){
+                    languages = language_which[i].value;
+                }
+            }
+            if(languages==""){
+                languages="en";
+            }
+            var h1s = document.getElementsByTagName("h1");
+            for(i=0; i<h1s.length; i++){
+                if(languages=="en"){
+                    h1s[i].textContent="Quick Math";
+                }else{
+                    h1s[i].textContent = "快算";
+                }
+            }
+            
+            if(languages=="en"){
+                document.getElementById("username").placeholder = "Username";
+                document.getElementById("password").placeholder = "Password";
+                document.getElementById("login").value = "Login";
+            }else{
+                document.getElementById("username").placeholder = "账户名";
+                document.getElementById("password").placeholder = "密码";
+                document.getElementById("login").value = "登录";
+            }
+            /*if(languages == "en")
+                languages = "zh";
+            else
+                languages = "en";*/
+        }
+        switchlang();
+    </script>
+    <noscript>Sorry, it looks like your browser doesn't support Javascript or have it enabled.</noscript>
+
+</body>
+</html>

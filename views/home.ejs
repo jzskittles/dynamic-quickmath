@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<style type="text/css">
+    html, body {
+        min-height: 100%;
+    }
+    body {
+        margin:40px auto;
+        width:320px;
+        height:600px;
+        touch-action: manipulation;
+    }
+    .options{
+        background-color:purple;
+        color:white;
+        padding:12px;
+        text-decoration: none;
+        margin:10px;
+        outline:solid 5px black;
+        font-size:20px;
+    }
+    .options:hover{
+        outline-width: 7px;
+    }
+    h1{
+        color:crimson;
+        font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+        font-style:italic;
+        text-align: center;
+        font-size:42px;
+    }
+    h2{
+        color:dodgerblue;
+        font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+        text-align: center;
+    }
+    a {
+        width: 100%;
+        text-align: center;
+        text-decoration: none;
+        color:white;
+    }
+    #nums{
+        width:320px;
+        height:70px;
+        overflow: hidden;
+    }
+    #two,#twomd,#tworem{
+        float:left;
+    }
+    #three,#threemd,#threerem{
+        float:right;
+    }
+    #leaderboard{
+        float:right;
+    }   
+</style>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Quick Math</title>
+</head>
+
+<body>
+    <button id="switch-lang" onclick="switchlang()">ENG/中</button>
+    <button id="leaderboard" onclick="highscore()">Leaderboard</button>
+
+    <div>
+        <h1 lang="en">Quick Math</h1>
+        <h1 lang="zh">快算</h1>
+    </div>
+
+    <h2 lang="en">Addition/Subtraction</h2>
+    <h2 lang="zh">加减</h2>
+
+    <div id="nums">
+        <a href="twonum.html#en"><h4 lang = "en" class="options" id="two">2 NUMBERS</h4></a>
+        <a href="twonum.html#zh"><h4 lang = "zh" class="options" id="two">两个数</h4></a>
+        <a href="threenum.html#en"><h4 lang = "en" class="options" id="three">3 NUMBERS</h4></a>
+        <a href="threenum.html#zh"><h4 lang = "zh" class="options" id="three">三个数</h4></a>
+    </div>
+
+    <h2 lang="en">Multiplication/Division</h2>
+    <h2 lang="zh">乘除</h2>
+
+    <div id="nums">
+        <a href="twomd.html#en"><h4 lang = "en" class="options" id="twomd">2 NUMBERS</h4></a>
+        <a href="twomd.html#zh"><h4 lang = "zh" class="options" id="twomd">两个数</h4></a>
+        <a href="threemd.html#en"><h4 lang = "en" class="options" id="threemd">3 NUMBERS</h4></a>
+        <a href="threemd.html#zh"><h4 lang = "zh" class="options" id="threemd">三个数</h4></a>
+    </div>
+
+    <h2 lang="en">Remainders</h2>
+    <h2 lang="zh">余数</h2>
+
+    <div id="nums">
+        <a href="tworem.html#en"><h4 lang = "en" class="options" id="tworem">2 NUMBERS</h4></a>
+        <a href="tworem.html#zh"><h4 lang = "zh" class="options" id="tworem">两个数</h4></a>
+        <a href="threerem.html#en"><h4 lang = "en" class="options" id="threerem">3 NUMBERS</h4></a>
+        <a href="threerem.html#zh"><h4 lang = "zh" class="options" id="threerem">三个数</h4></a>
+    </div>
+    
+    <script src="https://www.gstatic.com/firebasejs/5.2.0/firebase.js"></script>
+    <script>
+    // Initialize Firebase
+    var config = {
+        apiKey: "AIzaSyDkuwFgPII4q8j_V823wnxmA4KGtl6dJM8",
+        authDomain: "quickmathweb.firebaseapp.com",
+        databaseURL: "https://quickmathweb.firebaseio.com",
+        projectId: "quickmathweb",
+        storageBucket: "",
+        messagingSenderId: "513746090721"
+    };
+    firebase.initializeApp(config);
+    </script>
+    <script>
+        // Get a reference to the database service
+        var database = firebase.database();
+        var languages = window.location.hash.substring(1,3);
+        if(languages==""){
+            languages="en";
+        }
+        //alert(window.location.hash.substring(4,7));
+        var highscores = [0,0,0,0,0,0];
+        if(window.location.hash.substring(4,7)=="as2"){
+            if(window.location.hash.substring(7)>highscores[0])
+                highscores[0] = window.location.hash.substring(7);
+        }
+        if(window.location.hash.substring(4,7)=="as3"){
+            if(window.location.hash.substring(7)>highscores[1])
+                highscores[1] = window.location.hash.substring(7);        
+        }
+        if(window.location.hash.substring(4,7)=="md2"){
+            if(window.location.hash.substring(7)>highscores[2])
+                highscores[2] = window.location.hash.substring(7); 
+        }
+        if(window.location.hash.substring(4,7)=="md3"){
+            if(window.location.hash.substring(7)>highscores[3])
+                highscores[3] = window.location.hash.substring(7); 
+        }
+        if(window.location.hash.substring(4,7)=="rm2"){
+            if(window.location.hash.substring(7)>highscores[4])
+                highscores[4] = window.location.hash.substring(7); 
+        }
+        if(window.location.hash.substring(4,7)=="rm3"){
+            if(window.location.hash.substring(7)>highscores[5])
+                highscores[5] = window.location.hash.substring(7); 
+        }
+        
+        function switchlang(){
+            var h1s = document.getElementsByTagName("h1");
+            for(i=0; i<h1s.length; i++){
+                if(h1s[i].getAttribute("lang")==languages){
+                    h1s[i].style.display = "block";
+                }else{
+                    h1s[i].style.display = "none";
+                }
+            }
+            var h2s = document.getElementsByTagName("h2");
+            for(i=0; i<h2s.length; i++){
+                if(h2s[i].getAttribute("lang")==languages){
+                    h2s[i].style.display = "block";
+                }else{
+                    h2s[i].style.display = "none";
+                }
+            }
+            var h4s = document.getElementsByTagName("h4");
+            for(i=0; i<h4s.length; i++){
+                if(h4s[i].getAttribute("lang")==languages){
+                    h4s[i].style.display = "block";
+                }else{
+                    h4s[i].style.display = "none";
+                }
+            }
+
+            if(languages == "en")
+                document.getElementById("leaderboard").textContent = "Leaderboard";
+            else
+                document.getElementById("leaderboard").textContent = "排行榜";
+            
+            if(languages == "en")
+                languages = "zh";
+            else
+                languages = "en";
+        }
+
+        function highscore(){
+            alert(window.location.hash.substring(4));
+            window.location.href = "leaderboard.html"+"#"+languages+"#"+window.location.hash.substring(4);
+        }
+        switchlang();
+    </script>
+    <noscript>Sorry, it looks like your browser doesn't support Javascript or have it enabled.</noscript>
+
+</body>
+</html>
