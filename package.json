@@ -20,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/jzskittles/dynamic-quickmath/issues"
   },
-  "homepage": "https://github.com/jzskittles/dynamic-quickmath#readme"
+  "homepage": "https://github.com/jzskittles/dynamic-quickmath#readme",
+  "dependencies": {
+    "express": "^4.16.3"
+  }
 }
