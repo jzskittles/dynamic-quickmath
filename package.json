@@ -1,0 +1,24 @@
+{
+  "name": "dynamic-quickmath",
+  "version": "1.0.0",
+  "description": "dynamic version of quickmathweb game",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jzskittles/dynamic-quickmath.git"
+  },
+  "keywords": [
+    "dynamic",
+    "quick",
+    "math"
+  ],
+  "author": "Jenny Zhang",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jzskittles/dynamic-quickmath/issues"
+  },
+  "homepage": "https://github.com/jzskittles/dynamic-quickmath#readme"
+}
