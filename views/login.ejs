@@ -74,7 +74,7 @@
 
 <body>
     <div>
-        <h1>Quick Math</h1>
+        <h1 id="title">Quick Math</h1>
     </div>
 
     <!--<h2 lang="en">Username</h2>
@@ -108,10 +108,7 @@
     <% } %>
     
     <script>
-        var languages = window.location.hash.substring(1,3);
-        if(languages==""){
-            languages="en";
-        }
+        var languages = "en";
 
         function switchlang(){
             var language_which = document.getElementsByName("languages");
@@ -122,29 +119,19 @@
             }
             if(languages==""){
                 languages="en";
-            }
-            var h1s = document.getElementsByTagName("h1");
-            for(i=0; i<h1s.length; i++){
-                if(languages=="en"){
-                    h1s[i].textContent="Quick Math";
-                }else{
-                    h1s[i].textContent = "快算";
-                }
-            }
-            
+            }            
             if(languages=="en"){
                 document.getElementById("username").placeholder = "Username";
                 document.getElementById("password").placeholder = "Password";
                 document.getElementById("login").value = "Login";
+                document.getElementById("title").textContent = "Quick Math";
             }else{
                 document.getElementById("username").placeholder = "账户名";
                 document.getElementById("password").placeholder = "密码";
                 document.getElementById("login").value = "登录";
+                document.getElementById("title").textContent = "快算";
             }
-            /*if(languages == "en")
-                languages = "zh";
-            else
-                languages = "en";*/
+
         }
         switchlang();
     </script>

@@ -11,7 +11,7 @@
 <body>
     <header>
         <form action="/header" method="post">
-            <input type="submit" formaction="/back" value= "Back" style="background-color:crimson; border:0px">
+            <input id="back" type="submit" formaction="/back" value= "Back" style="background-color:crimson; border:0px; font-size: 16px; width:45px;">
             <input id="hs" name="hs" type="hidden" value="<%- hs %>">
             <input id="lang" name="lang" type="hidden" value="<%- language %>">
             <input id="user" name="username" type="hidden" value="<%- username %>">
@@ -54,10 +54,14 @@
             var buttons = document.getElementsByTagName("button");
             for(i=0; i<buttons.length; i++){
                 if(buttons[i].id=="enter"){
-                    if(languages=="en")
+                    if(languages=="en"){
                         buttons[i].textContent="ENTER";
-                    else
+                        document.getElementById("back").value = "Back";
+                    }
+                    else{
                         buttons[i].textContent="抢答";
+                        document.getElementById("back").value = "退出";
+                    }
                 }
             }
             function addText(clicked_id) {
@@ -136,13 +140,7 @@
 
                 randomNum();
             }
-            /*function back(){
-                window.location.href = "index.html"+"#"+languages;
-            }*/
             randomNum();
-            window.onbeforeunload = function (evt) {
-                window.location.href = "index.html"+"#"+languages;
-            }
         </script>
     <% } %>
 
@@ -306,11 +304,7 @@
                     document.getElementById("streakhs").value = streaknum;
                     document.getElementById("streak").textContent = streaknum;
                     document.getElementById("answer").textContent = "= ";
-                    //alert("call randomnum");
-                    
                     randomNum();
-                    //alert("called randomnum");
-    
                 }
                 
                 randomNum();

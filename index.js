@@ -63,8 +63,8 @@ app.post('/', function (req, res) {
                 }else{
                     language = "语言: 中文";
                 }*/
-                lang = row.language;
-                return res.render('home', {language: row.language, username: row.username});
+                lang = req.body.language;
+                return res.render('home', {language: req.body.language, username: row.username});
             }
         });
     }
@@ -79,6 +79,24 @@ app.get('/main', function (req, res) {
 
     res.render('problem', {language: null, error: null});
 });*/
+
+app.post('/language', function (req, res) {
+    console.log(req.body.language + " is clicked.");
+    let language = req.body.language;
+    if(language == "English"){
+        lang = "zh";
+    }else{
+        lang = "en";
+    }
+    db.run(`UPDATE users SET language = ? WHERE username = ?`, [lang, req.body.username], function(err) {
+        if (err) {
+            return console.log(err.message);
+        }else{
+            return console.log("updated language");
+        }
+    });
+    res.render('home', {language:lang, username:req.body.username});
+});
 
 app.post('/two', function (req, res) {
     console.log(req.body.two + " is clicked.");
@@ -144,16 +162,18 @@ app.post('/back', function (req, res) {
             if(req.body.hs == "hs3rm"){
                 rowatr = row.hs3rm;
             }
-            let sql = `UPDATE users 
-                    SET totalsolved = totalsolved + `+req.body.streak+`
-                    WHERE username = ?`;
-            db.run(sql, [req.body.username], function(err) {
-                if (err) {
-                    return console.log(err.message);
-                }else{
-                    return console.log("updated total solved!");
-                }
-            });
+            if(req.body.streak>0){
+                let sql = `UPDATE users 
+                        SET totalsolved = totalsolved + `+req.body.streak+`
+                        WHERE username = ?`;
+                db.run(sql, [req.body.username], function(err) {
+                    if (err) {
+                        return console.log(err.message);
+                    }else{
+                        return console.log("updated total solved!");
+                    }
+                });
+            }
             if(rowatr < req.body.streak){
                 sql = `UPDATE users 
                             SET `+req.body.hs+` = ?
@@ -176,7 +196,7 @@ app.post('/back', function (req, res) {
     })
     
     console.log("back is clicked.");
-    res.render('home', {language: lang, username:req.body.username});
+    res.render('home', {language: req.body.lang, username:req.body.username});
 });
 
 app.post('/logout', function(req, res){

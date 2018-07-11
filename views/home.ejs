@@ -18,6 +18,7 @@
         margin:10px;
         outline:solid 5px black;
         font-size:20px;
+        width:140px;
     }
     .options:hover{
         outline-width: 7px;
@@ -52,6 +53,7 @@
         float:right;
     }
     #leaderboard{
+        margin:4px auto;
         float:right;
     }
     input{
@@ -68,17 +70,16 @@
 </head>
 
 <body>
-    <% if(language == "en"){ %>
-        <button id="language" onclick="switchlang()"><%= language %></button>
-    <% } %>
-
-    <button id="leaderboard" onclick="highscore()">Leaderboard</button>
-
-    <div>
-        <h1>Quick Math</h1>
-    </div>
+    
 
     <form action="/problem" method="post">
+        <input type="submit" id="language" name="language" value="<%- language %>" formaction="/language">
+        <input type="submit" id="leaderboard" name="leaderboard"  value = "Leaderboard" formaction="/leaderboard">
+
+        <div>
+            <h1 id="title">Quick Math</h1>
+        </div>
+
         <h2 id="as">Addition/Subtraction</h2>
         <input type="submit" class="options" id="two" name="two" value="2 NUMBERS" formaction="/two">
         <input type="submit" class="options" id="three" name="three" value="3 NUMBERS" formaction="/three">
@@ -94,105 +95,46 @@
         <input type="hidden" id="username" name="username" value="<%- username %>">
         <input id="logout" class="ghost-button" name="logout" type="submit" value="Log Out" formaction="/logout">
     </form>
-
-
-    <!--<h2>Addition/Subtraction</h2>
-
-    <div class="nums">
-        <a ><h4 class="options" id="two" onclick="location.href='/problem'">2 NUMBERS</h4></a>
-        <a href="threenum.html#en"><h4 class="options" id="three">3 NUMBERS</h4></a>
-    </div>
-
-    <h2>Multiplication/Division</h2>
-
-    <div class="nums">
-        <a href="twomd.html#en"><h4 class="options" id="twomd">2 NUMBERS</h4></a>
-        <a href="threemd.html#en"><h4 class="options" id="threemd">3 NUMBERS</h4></a>
-    </div>
-
-    <h2>Remainders</h2>
-
-    <div class="nums">
-        <a href="tworem.html#en"><h4 class="options" id="tworem">2 NUMBERS</h4></a>
-        <a href="threerem.html#en"><h4 class="options" id="threerem">3 NUMBERS</h4></a>
-    </div>-->
     
     <script>
         var languages = "<%- language %>";
         if(languages==""){
             languages="en";
         }
-        //alert(window.location.hash.substring(4,7));
-        var highscores = [0,0,0,0,0,0];
-        if(window.location.hash.substring(4,7)=="as2"){
-            if(window.location.hash.substring(7)>highscores[0])
-                highscores[0] = window.location.hash.substring(7);
-        }
-        if(window.location.hash.substring(4,7)=="as3"){
-            if(window.location.hash.substring(7)>highscores[1])
-                highscores[1] = window.location.hash.substring(7);        
-        }
-        if(window.location.hash.substring(4,7)=="md2"){
-            if(window.location.hash.substring(7)>highscores[2])
-                highscores[2] = window.location.hash.substring(7); 
-        }
-        if(window.location.hash.substring(4,7)=="md3"){
-            if(window.location.hash.substring(7)>highscores[3])
-                highscores[3] = window.location.hash.substring(7); 
-        }
-        if(window.location.hash.substring(4,7)=="rm2"){
-            if(window.location.hash.substring(7)>highscores[4])
-                highscores[4] = window.location.hash.substring(7); 
-        }
-        if(window.location.hash.substring(4,7)=="rm3"){
-            if(window.location.hash.substring(7)>highscores[5])
-                highscores[5] = window.location.hash.substring(7); 
-        }
         
         function switchlang(){
-            /*var h1s = document.getElementsByTagName("h1");
-            for(i=0; i<h1s.length; i++){
-                if(h1s[i].getAttribute("lang")==languages){
-                    h1s[i].style.display = "block";
-                }else{
-                    h1s[i].style.display = "none";
-                }
-            }
-            var h2s = document.getElementsByTagName("h2");
-            for(i=0; i<h2s.length; i++){
-                if(h2s[i].getAttribute("lang")==languages){
-                    h2s[i].style.display = "block";
-                }else{
-                    h2s[i].style.display = "none";
-                }
-            }
-            var h4s = document.getElementsByTagName("h4");
-            for(i=0; i<h4s.length; i++){
-                if(h4s[i].getAttribute("lang")==languages){
-                    h4s[i].style.display = "block";
-                }else{
-                    h4s[i].style.display = "none";
-                }
-            }*/
+            //alert(languages);
 
             if(languages == "en"){
-                document.getElementById("leaderboard").textContent = "Leaderboard";
-                document.getElementById("language").textContent = "Language: English";
+                document.getElementById("leaderboard").value = "Leaderboard";
+                document.getElementById("language").value = "English";
+                document.getElementById("title").textContent = "Quick Math";
+                document.getElementById("two").value = "2 NUMBERS";
+                document.getElementById("three").value = "3 NUMBERS";
+                document.getElementById("twomd").value = "2 NUMBERS";
+                document.getElementById("threemd").value = "3 NUMBERS";
+                document.getElementById("tworem").value = "2 NUMBERS";
+                document.getElementById("threerem").value = "3 NUMBERS";
+                document.getElementById("logout").value = "Log Out";
+                document.getElementById("as").textContent = "Addition/Subtraction";
+                document.getElementById("md").textContent = "Multiplication/Division";
+                document.getElementById("rem").textContent = "Remainder";
             }
-            else{
-                document.getElementById("leaderboard").textContent = "排行榜";
-                document.getElementById("language").textContent = "语言: 中文";
+            if(languages == "zh"){
+                document.getElementById("leaderboard").value = "排行榜";
+                document.getElementById("language").value = "中文";
+                document.getElementById("title").textContent = "快算";
+                document.getElementById("two").value = "两个数";
+                document.getElementById("three").value = "三个数";
+                document.getElementById("twomd").value = "两个数";
+                document.getElementById("threemd").value = "三个数";
+                document.getElementById("tworem").value = "两个数";
+                document.getElementById("threerem").value = "三个数";
+                document.getElementById("logout").value = "退出";
+                document.getElementById("as").textContent = "加减";
+                document.getElementById("md").textContent = "乘除";
+                document.getElementById("rem").textContent = "余数";
             }
-            
-            if(languages == "en")
-                languages = "zh";
-            else
-                languages = "en";
-        }
-
-        function highscore(){
-            alert(window.location.hash.substring(4));
-            window.location.href = "leaderboard.html"+"#"+languages+"#"+window.location.hash.substring(4);
         }
         switchlang();
     </script>
