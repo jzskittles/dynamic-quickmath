@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>Quick Math</title>
+    <link rel="stylesheet" type="text/css" href="/css/question.css">
+</head>
+
+<body>
+    <header>
+        <% include /Users/jenny/dynamic-quickmath/views/partials/header %>
+    </header>
+
+    <table id="probtable" style="display:block">
+        <tr>
+            <td><h2 id="part1" class="prob">123</h2></td>
+            <td><h2 id="sign" class="prob"><%= sign %></h2></td>
+            <td><h2 id="part2" class="prob">123</h2></td>
+            <td><h2 id="sign2" class="prob"><%= signs %></h2></td>
+            <td><h2 id="part3" class="prob">123</h2></td>
+        </tr>
+    </table>
+    
+    <main>
+        <% include /Users/jenny/dynamic-quickmath/views/partials/numpad %>
+    </main>
+        <script>
+            var result=0;
+            var streaknum = 0;
+            var languages = window.location.hash.substring(1);
+            var buttons = document.getElementsByTagName("button");
+            for(i=0; i<buttons.length; i++){
+                if(buttons[i].id=="enter"){
+                    if(languages=="en")
+                        buttons[i].textContent="ENTER";
+                    else
+                        buttons[i].textContent="抢答";
+                }
+            }
+            function addText(clicked_id) {
+                if(document.getElementById("answer").textContent.length<12)
+                    document.getElementById("answer").textContent = document.getElementById("answer").textContent + clicked_id;
+            }
+            function removeText(){
+                if(document.getElementById("answer").textContent.length>2){
+                    var str = document.getElementById("answer").textContent;
+                    str = str.substring(0, str.length - 1);
+                    document.getElementById("answer").textContent = str;
+                }    
+            }
+            function randomNum(){
+                var probtable = document.getElementById("probtable");
+                var items = probtable.getElementsByTagName("h2");
+                var sign = items[1].textContent; 
+                var signs = items[3].textContent; 
+
+                var n=0;
+                var o=0;
+                if(((Math.random()*100) + 1)>50)
+                    n = 1;
+                if(((Math.random()*100) + 1)>50)
+                    o = 1; 
+
+                if(sign=="+"||sign=="-"){
+                    var a = Math.floor((Math.random() * 98) + 1);
+                    var b = Math.floor((Math.random() * 98) + 1);
+                    var c = Math.floor((Math.random() * 98) + 1);
+
+                    
+                    if(n==0){
+                        items[1].textContent="+";
+                        result = a+b;
+                    }else{
+                        items[1].textContent="-";
+                        if(b>a){
+                            var m = a;
+                            a = b;
+                            b = m;
+                        }
+                        result = a-b;
+                    }
+
+                    if(o==0){
+                        items[3].textContent="+";
+                        result = result + c;
+                    }else{
+                        items[3].textContent="-";
+                        if(c>result){
+                            items[3].textContent="+";
+                            result = result + c;
+                        }else{
+                            result = result-c;
+                        }
+                    }
+                    
+                    items[0].textContent = a;
+                    items[2].textContent = b;
+                    items[4].textContent = c;
+                }
+                if(sign=="x"|| sign=="/"){
+                    var a = Math.floor((Math.random() * 60) + 1);
+                    var b = Math.floor((Math.random() * 30) + 1);
+                    var c = Math.floor((Math.random() * 10) + 1);
+
+                    var probtable = document.getElementById("probtable");
+                    var items = probtable.getElementsByTagName("h2");
+                    if(n==0){
+                        items[1].textContent="x";
+                        result = a*b;
+                    }else{
+                        items[1].textContent="/";
+                        result = a;
+                        a = a*b;
+                    }
+
+                    if(o==0){
+                        items[3].textContent="x";
+                        result = result*c;
+                    }else{
+                        items[3].textContent="/";
+                        if(result%c==0){
+                            result = result/c;
+                        }else{
+                            var possdiv = [];
+                            for(i=2;i<10;i++){
+                                if(result%i==0){
+                                    possdiv.push(i);
+                                }
+                            }
+                            if(possdiv.length>0){
+                                c = possdiv[Math.floor(Math.random() * possdiv.length)];
+                                result = result/c;
+                            }
+                            else{
+                                c = 1;
+                            }
+                        }
+                    }
+                    items[0].textContent = a;
+                    items[2].textContent = b;
+                    items[4].textContent = c;
+                }  
+                if(sign==""||sign=="%"){
+                    var a = Math.floor((Math.random() * 50) + 10);
+                    var b = Math.floor((Math.random() * 30) + 5);
+                    var c = Math.floor((Math.random() * 8) + 3);
+
+                    var n=0;
+                    if(((Math.random()*100) + 1)>50)
+                        n = 1;
+
+                    var probtable = document.getElementById("probtable");
+                    var items = probtable.getElementsByTagName("h2");
+                    if(n==0){
+                        items[1].textContent="x";
+                        result = a*b;
+                    }else{
+                        items[1].textContent="/";
+                        result = a;
+                        a = a*b;
+                    }
+
+                    items[3].textContent="/";
+                    if(result>c){
+                        result = result % c;
+                    }else{
+                        randomNum();
+                    }
+
+                    items[0].textContent = a;
+                    items[2].textContent = b;
+                    items[4].textContent = c;
+                }
+                           
+                
+            }
+            function compare(){
+                var answers = document.getElementById("answer").textContent;
+                
+                if(answers.substring(2) == result){
+                    streaknum++;                
+                }else{
+                    streaknum=0;
+                }
+                document.getElementById("streak").textContent = streaknum;
+                document.getElementById("answer").textContent = "= ";
+                //alert("call randomnum");
+                
+                randomNum();
+                //alert("called randomnum");
+
+            }
+            
+            randomNum();
+            
+        </script>
+
+    <noscript>Sorry, it looks like your browser doesn't support Javascript or have it enabled.</noscript>
+
+</body>
+</html>

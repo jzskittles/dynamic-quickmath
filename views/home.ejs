@@ -13,7 +13,7 @@
     .options{
         background-color:purple;
         color:white;
-        padding:12px;
+        padding:10px;
         text-decoration: none;
         margin:10px;
         outline:solid 5px black;
@@ -40,7 +40,7 @@
         text-decoration: none;
         color:white;
     }
-    #nums{
+    .nums{
         width:320px;
         height:70px;
         overflow: hidden;
@@ -53,55 +53,72 @@
     }
     #leaderboard{
         float:right;
-    }   
+    }
+    input{
+        border:0px;
+    }
 </style>
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Quick Math</title>
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300' rel='stylesheet' type='text/css'>
 </head>
 
 <body>
+    <% if(language == "en"){ %>
+        <button id="language" onclick="switchlang()"><%= language %></button>
+    <% } %>
+
     <button id="leaderboard" onclick="highscore()">Leaderboard</button>
 
     <div>
-        <h1 lang="en">Quick Math</h1>
-        <h1 lang="zh">快算</h1>
+        <h1>Quick Math</h1>
     </div>
 
-    <h2 lang="en">Addition/Subtraction</h2>
-    <h2 lang="zh">加减</h2>
+    <form action="/problem" method="post">
+        <h2 id="as">Addition/Subtraction</h2>
+        <input type="submit" class="options" id="two" name="two" value="2 NUMBERS" formaction="/two">
+        <input type="submit" class="options" id="three" name="three" value="3 NUMBERS" formaction="/three">
 
-    <div id="nums">
-        <a href="twonum.html#en"><h4 lang = "en" class="options" id="two">2 NUMBERS</h4></a>
-        <a href="twonum.html#zh"><h4 lang = "zh" class="options" id="two">两个数</h4></a>
-        <a href="threenum.html#en"><h4 lang = "en" class="options" id="three">3 NUMBERS</h4></a>
-        <a href="threenum.html#zh"><h4 lang = "zh" class="options" id="three">三个数</h4></a>
+        <h2 id="md">Multiplication/Division</h2>
+        <input type="submit" class="options" id="twomd" name="twomd" value="2 NUMBERS" formaction="/twomd">
+        <input type="submit" class="options" id="threemd" name="threemd" value="3 NUMBERS" formaction="/threemd">
+
+        <h2 id="rem">Remainders</h2>
+        <input type="submit" class="options" id="tworem" name="tworem" value="2 NUMBERS" formaction="/tworem">
+        <input type="submit" class="options" id="threerem" name="threerem" value="3 NUMBERS" formaction="/threerem">
+        
+        <input type="hidden" id="username" name="username" value="<%- username %>">
+        <input id="logout" class="ghost-button" name="logout" type="submit" value="Log Out" formaction="/logout">
+    </form>
+
+
+    <!--<h2>Addition/Subtraction</h2>
+
+    <div class="nums">
+        <a ><h4 class="options" id="two" onclick="location.href='/problem'">2 NUMBERS</h4></a>
+        <a href="threenum.html#en"><h4 class="options" id="three">3 NUMBERS</h4></a>
     </div>
 
-    <h2 lang="en">Multiplication/Division</h2>
-    <h2 lang="zh">乘除</h2>
+    <h2>Multiplication/Division</h2>
 
-    <div id="nums">
-        <a href="twomd.html#en"><h4 lang = "en" class="options" id="twomd">2 NUMBERS</h4></a>
-        <a href="twomd.html#zh"><h4 lang = "zh" class="options" id="twomd">两个数</h4></a>
-        <a href="threemd.html#en"><h4 lang = "en" class="options" id="threemd">3 NUMBERS</h4></a>
-        <a href="threemd.html#zh"><h4 lang = "zh" class="options" id="threemd">三个数</h4></a>
+    <div class="nums">
+        <a href="twomd.html#en"><h4 class="options" id="twomd">2 NUMBERS</h4></a>
+        <a href="threemd.html#en"><h4 class="options" id="threemd">3 NUMBERS</h4></a>
     </div>
 
-    <h2 lang="en">Remainders</h2>
-    <h2 lang="zh">余数</h2>
+    <h2>Remainders</h2>
 
-    <div id="nums">
-        <a href="tworem.html#en"><h4 lang = "en" class="options" id="tworem">2 NUMBERS</h4></a>
-        <a href="tworem.html#zh"><h4 lang = "zh" class="options" id="tworem">两个数</h4></a>
-        <a href="threerem.html#en"><h4 lang = "en" class="options" id="threerem">3 NUMBERS</h4></a>
-        <a href="threerem.html#zh"><h4 lang = "zh" class="options" id="threerem">三个数</h4></a>
-    </div>
+    <div class="nums">
+        <a href="tworem.html#en"><h4 class="options" id="tworem">2 NUMBERS</h4></a>
+        <a href="threerem.html#en"><h4 class="options" id="threerem">3 NUMBERS</h4></a>
+    </div>-->
     
     <script>
-        var languages = window.location.hash.substring(1,3);
+        var languages = "<%- language %>";
         if(languages==""){
             languages="en";
         }
@@ -133,7 +150,7 @@
         }
         
         function switchlang(){
-            var h1s = document.getElementsByTagName("h1");
+            /*var h1s = document.getElementsByTagName("h1");
             for(i=0; i<h1s.length; i++){
                 if(h1s[i].getAttribute("lang")==languages){
                     h1s[i].style.display = "block";
@@ -156,12 +173,16 @@
                 }else{
                     h4s[i].style.display = "none";
                 }
-            }
+            }*/
 
-            if(languages == "en")
+            if(languages == "en"){
                 document.getElementById("leaderboard").textContent = "Leaderboard";
-            else
+                document.getElementById("language").textContent = "Language: English";
+            }
+            else{
                 document.getElementById("leaderboard").textContent = "排行榜";
+                document.getElementById("language").textContent = "语言: 中文";
+            }
             
             if(languages == "en")
                 languages = "zh";
