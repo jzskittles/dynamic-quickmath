@@ -34,6 +34,7 @@
         color:dodgerblue;
         font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
         text-align: center;
+        white-space: pre-line;
     }
     a {
         width: 100%;
@@ -59,6 +60,33 @@
     input{
         border:0px;
     }
+    .ghost-button {
+        width:300px;
+        background-color: transparent;
+        border:2px solid #ddd;
+        padding:10px 30px;
+        -webkit-transition: all 0.1s ease-in-out;
+        -moz-transition: all 0.1s ease-in-out;
+        -ms-transition: all 0.1s ease-in-out;
+        -o-transition: all 0.1s ease-in-out;
+        transition: all 0.1s ease-in-out;
+    }
+    .ghost-button:hover {
+        border:2px solid #515151;
+    }
+    #left{float:left;width:90px;font-size:24px;}
+    #right{float:right;width:90px;font-size:24px;}
+    #center{margin:auto auto;width:90px;font-size:24px;}
+    img{
+        width:30px;
+        height:30px;
+        float:right;
+        margin: auto 5px;
+    }
+    h4{
+        border:0px auto;
+        margin:0px 0px;
+    }
 </style>
 
 <head>
@@ -70,37 +98,26 @@
 </head>
 
 <body>
-    
-
-    <form action="/leader" method="post">
-        <input id="back" type="submit" formaction="/back" value= "Back" style="background-color:crimson; border:0px; font-size: 16px; width:45px;">
+    <form action="/leader" method="post" id="container">
+        <input id="back" type="submit" formaction="/backl" value= "Back" style="background-color:crimson; border:0px; font-size: 16px; width:45px;">
         <input type="submit" id="language" name="language" value="<%- language %>" formaction="/language">
         <input type="hidden" id="doc" name="title" value="Leaderboard">
         <div>
             <h1 id="title">Leaderboard</h1>
         </div>
-
-        <h2 id="as">Addition/Subtraction</h2>
-        <input type="submit" class="options" id="two" name="two" value="2 NUMBERS" formaction="/hs2as">
-        <input type="submit" class="options" id="three" name="three" value="3 NUMBERS" formaction="/hs3as">
-
-        <h2 id="md">Multiplication/Division</h2>
-        <input type="submit" class="options" id="twomd" name="twomd" value="2 NUMBERS" formaction="/hs2md">
-        <input type="submit" class="options" id="threemd" name="threemd" value="3 NUMBERS" formaction="/hs3md">
-
-        <h2 id="rem">Remainders</h2>
-        <input type="submit" class="options" id="tworem" name="tworem" value="2 NUMBERS" formaction="/hs2rm">
-        <input type="submit" class="options" id="threerem" name="threerem" value="3 NUMBERS" formaction="/hs3rm">
-        
-        <input type="hidden" id="username" name="username" value="<%- username %>">
+        <% if(selection){ %>
+            <% include /Users/jenny/dynamic-quickmath/views/partials/selection %>
+        <% } %>
+        <% if(!selection){ %>
+            <% include /Users/jenny/dynamic-quickmath/views/partials/ranking %>
+        <% } %>
     </form>
     
     <script>
         var languages = "<%- language %>";
         if(languages==""){
             languages="en";
-        }
-                
+        }                        
         function switchlang(){
             //alert(languages);
 
@@ -117,6 +134,7 @@
                 document.getElementById("as").textContent = "Addition/Subtraction";
                 document.getElementById("md").textContent = "Multiplication/Division";
                 document.getElementById("rem").textContent = "Remainder";
+                //alert(category+" "+category.substring(2,3)+" "+category.substring(3));
             }
             if(languages == "zh"){
                 document.getElementById("back").value = "退出";
@@ -135,6 +153,79 @@
         }
         switchlang();
     </script>
+
+    <% if(!selection){ %>
+        <script>
+            var category = "<%- category %>";
+            //alert(category);
+            if(languages == "en"){
+                if(category.substring(3)==="as"){
+                    document.getElementById("category").textContent = "Addition/Subtraction: \r\n" + category.substring(2,3)+ " NUMBERS";
+                }
+                if(category.substring(3)==="md"){
+                    document.getElementById("category").textContent = "Multiplication/Division: \r\n" + category.substring(2,3)+ " NUMBERS";
+                }
+                if(category.substring(3)==="rm"){
+                    document.getElementById("category").textContent = "Remainder: " + category.substring(2,3)+ " NUMBERS";
+                }
+            }
+            if(languages == "zh"){
+                var front = "";
+                
+                if(category.substring(2,3)==="2"){
+                    front = "两";
+                }
+                if(category.substring(2,3)==="3"){
+                    front = "三";
+                }
+                if(category.substring(3)==="as"){
+                    document.getElementById("category").textContent = "加减: " + front + "个数";
+                }
+                if(category.substring(3)==="md"){
+                    document.getElementById("category").textContent = "乘除: " + front + "个数";
+                }
+                if(category.substring(3)==="rm"){
+                    document.getElementById("category").textContent = "余数" + front + "个数";
+                }
+            }
+            var datauser =  "<%- datauser %>";
+            var arrusers = datauser.split(",");
+            var datahs = "<%- datahs %>";
+            var arrhs = datahs.split(",");
+            var number = arrusers.length;
+            var container = document.getElementById("container");
+            var ranks = 1;
+            for(i=0;i<arrusers.length;i++){
+                //container.appendChild(document.createTextNode(arrhs[i]));
+                //alert("new node" + arrusers[i]+" "+arrhs[i]);
+
+                var input = document.createElement("div");
+                input.name = "rank "+ (i+1);
+                input.style.width = "295px";
+                input.style.padding="10px 10px";
+                input.style.height = "32px";
+                input.className = "ghost-button";
+                if(i===0){
+                    ranks=1;
+                }
+                else if(arrhs[i-1]>arrhs[i]){
+                    ranks++;
+                }else if(arrhs[i-1]===arrhs[i]){
+                    ranks = ranks;
+                }else{
+                    ranks++;
+                }
+                input.innerHTML = '<div id="left" style="display:inline;">'+ranks+'</div>'+
+                                    '<div id="right" style="text-align:right;"><h4><img src="/images/flame.png" alt="streak flame"></h4><h4>'+arrhs[i]+'</h4></div>'+
+                                    '<div id="center" style="float:right; text-align:center;">'+arrusers[i]+'</div>';
+                if(arrusers[i] === document.getElementById("username").value){
+                    input.style.backgroundColor = "yellow";
+                }
+                
+                container.appendChild(input);
+            }
+        </script>
+    <% } %>
     <noscript>Sorry, it looks like your browser doesn't support Javascript or have it enabled.</noscript>
 
 </body>

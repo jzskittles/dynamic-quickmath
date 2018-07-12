@@ -41,7 +41,7 @@ app.post('/', function (req, res) {
             exists = true;
             if(req.body.password === row.password){
                 console.log("Logging in.");
-                if(language == undefined){
+                if(language === undefined){
                     language = row.language;
                 }
                 if(language !== row.language){
@@ -57,7 +57,7 @@ app.post('/', function (req, res) {
                 lang = row.language;
                 return res.render('home', {language: language, username: row.username});
             }else{
-                res.render('login', {logging: `Wrong password, ${username}!`, error: null});
+                res.render('login', {logging: `Wrong password, ${username}!`, language:row.language, error: null});
                 console.log("Wrong password.");
             }
         }        
@@ -65,15 +65,10 @@ app.post('/', function (req, res) {
     if(!exists){
         db.run(`INSERT INTO users(username, password, language, hs2as, hs3as, hs2md, hs3md, hs2rm, hs3rm, totalsolved) VALUES (?,?,?,?,?,?,?,?,?,?)`, [username,password,req.body.languages, 0, 0, 0, 0, 0, 0, 0], function(err) {
             if (err) {
-                res.render('login', {logging: null, error: 'Error, please try again'});
+                res.render('login', {logging: null, language:req.body.language, error: 'Error, please try again'});
                 return console.log(err.message);
             }else{
                 console.log(`A row has been inserted with rowid ${this.lastID}`);
-                /*if(row.language=== "en"){
-                    language = "Language: English";
-                }else{
-                    language = "语言: 中文";
-                }*/
                 lang = req.body.language;
                 return res.render('home', {language: req.body.language, username: row.username});
             }
@@ -86,20 +81,14 @@ app.get('/main', function (req, res) {
     res.render('home', {language: null, error: null, username: null});
 });
 
-/*app.get('/problem', function (req, res) {
-
-    res.render('problem', {language: null, error: null});
-});*/
-
 app.post('/language', function (req, res) {
-    console.log(req.body.language + " is clicked.");
+    //console.log(req.body.language + " is clicked.");
     let language = req.body.language;
-    if(language == "English"){
+    if(language === "English"){
         lang = "zh";
     }else{
         lang = "en";
     }
-    console.log(req.body.title);
     db.run(`UPDATE users SET language = ? WHERE username = ?`, [lang, req.body.username], function(err) {
         if (err) {
             return console.log(err.message);
@@ -107,19 +96,52 @@ app.post('/language', function (req, res) {
             return console.log("updated language");
         }
     });
-
-    if(req.body.title == "Quick Math"){
+    if(req.body.title === "Quick Math"){
         res.render('home', {language:lang, username:req.body.username});
     }
-    if(req.body.title == "Leaderboard"){
-        res.render('leaderboard',{username: req.body.username, language:lang, error: null});
+    if(req.body.title === "Leaderboard"){
+        if(req.body.selection === "selection"){
+            res.render('leaderboard',{username: req.body.username, language:lang, selection: true, datauser: null, datahs: null, category: null, error: null});
+        }
+        if(req.body.selection === "ranking"){
+            var usernames = [];
+            var highscore2as = [];
+            db.all(`SELECT username, hs2as FROM users ORDER BY hs2as DESC`, [], (err, rows) =>{
+                if(err){
+                return console.error(err.message);
+                }else{
+                    rows.forEach((row)=>{
+                        usernames.push(row.username);
+                        highscore2as.push(row.hs2as);
+                    }); 
+                    res.render('leaderboard',{username: req.body.username, language:lang, selection:false, datauser: usernames, datahs: highscore2as, category:"hs2as", error: null});
+                }
+            });
+        }
     }
 });
 
 app.post('/two', function (req, res) {
     console.log(req.body.two + " is clicked.");
     let username = req.body.username;
-    res.render('problem', {category: "two", sign: "+", language:lang, hs:"hs2as", username:username});
+    if(req.body.title === "Quick Math"){
+        res.render('problem', {category: "two", sign: "+", language:lang, hs:"hs2as", username:username});
+    }
+    if(req.body.title === "Leaderboard"){
+        var usernames = [];
+        var highscore2as = [];
+        db.all(`SELECT username, hs2as FROM users ORDER BY hs2as DESC`, [], (err, rows) =>{
+            if(err){
+              return console.error(err.message);
+            }else{
+                rows.forEach((row)=>{
+                    usernames.push(row.username);
+                    highscore2as.push(row.hs2as);
+                }); 
+                res.render('leaderboard',{username: req.body.username, language:lang, selection:false, datauser: usernames, datahs: highscore2as, category:"hs2as", error: null});
+            }
+        });
+    }
 });
 
 app.post('/three', function (req, res) {
@@ -157,28 +179,28 @@ app.post('/back', function (req, res) {
     console.log(req.body.streak);
     console.log(req.body.lang);
     console.log(req.body.username);*/
-    if(req.body.title == "Problem"){
+    if(req.body.title === "Problem"){
         db.get(`SELECT ` + req.body.hs+ ` FROM users WHERE username = ?`, [req.body.username], function(err, row){
             if (err) {
                 return console.log(err.message);
             }else{
                 var rowatr;
-                if(req.body.hs == "hs2as"){
+                if(req.body.hs === "hs2as"){
                     rowatr = row.hs2as;
                 }
-                if(req.body.hs == "hs3as"){
+                if(req.body.hs === "hs3as"){
                     rowatr = row.hs3as;
                 }
-                if(req.body.hs == "hs2md"){
+                if(req.body.hs === "hs2md"){
                     rowatr = row.hs2md;
                 }
-                if(req.body.hs == "hs3md"){
+                if(req.body.hs === "hs3md"){
                     rowatr = row.hs3md;
                 }
-                if(req.body.hs == "hs2rm"){
+                if(req.body.hs === "hs2rm"){
                     rowatr = row.hs2rm;
                 }
-                if(req.body.hs == "hs3rm"){
+                if(req.body.hs === "hs3rm"){
                     rowatr = row.hs3rm;
                 }
                 if(req.body.streak>0){
@@ -212,21 +234,28 @@ app.post('/back', function (req, res) {
         })
         res.render('home', {language:lang, username:req.body.username});
     }
-    if(req.body.title == "Leaderboard"){
+    
+    //console.log("back is clicked.");
+});
+
+app.post('/backl', function(req, res){
+    if(req.body.selection === "selection"){
         res.render('home',{username: req.body.username, language:lang});
     }
-    //console.log("back is clicked.");
+    if(req.body.selection === "ranking"){
+        res.render('leaderboard',{username: req.body.username, language:lang, selection: true, datauser: null, datahs: null, category: null, error: null});
+    }
 });
 
 app.post('/logout', function(req, res){
     console.log(req.body.username+ " logged out.");
-    if(lang == "en"){
+    if(lang === "en"){
         res.render('login',{logging: req.body.username +" logged out.", language:lang, error: null});
     }
-    if(lang == "zh"){
+    if(lang === "zh"){
         res.render('login', {logging: req.body.username +" 下线了.", language:lang, error: null});
     }
-})
+});
 
 app.post('/leaderboard', function(req, res){
     console.log("Updating leaderboard.");
@@ -243,10 +272,8 @@ app.post('/leaderboard', function(req, res){
             
         }
     });*/
-
-    res.render('leaderboard',{username: req.body.username, language:lang, error: null});
-    
-})
+    res.render('leaderboard',{username: req.body.username, language:lang, selection: true, datauser: null, datahs: null, category: null, error: null});
+});
 
 app.listen(3000, function () {
   console.log('Example app listening on port 3000!')
