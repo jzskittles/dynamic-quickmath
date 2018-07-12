@@ -52,7 +52,7 @@
     #three,#threemd,#threerem{
         float:right;
     }
-    #leaderboard{
+    #language{
         margin:4px auto;
         float:right;
     }
@@ -72,28 +72,27 @@
 <body>
     
 
-    <form action="/problem" method="post">
+    <form action="/leader" method="post">
+        <input id="back" type="submit" formaction="/back" value= "Back" style="background-color:crimson; border:0px; font-size: 16px; width:45px;">
         <input type="submit" id="language" name="language" value="<%- language %>" formaction="/language">
-        <input type="submit" id="leaderboard" name="leaderboard"  value = "Leaderboard" formaction="/leaderboard">
-
+        <input type="hidden" id="doc" name="title" value="Leaderboard">
         <div>
-            <h1 id="title">Quick Math</h1>
+            <h1 id="title">Leaderboard</h1>
         </div>
 
         <h2 id="as">Addition/Subtraction</h2>
-        <input type="submit" class="options" id="two" name="two" value="2 NUMBERS" formaction="/two">
-        <input type="submit" class="options" id="three" name="three" value="3 NUMBERS" formaction="/three">
+        <input type="submit" class="options" id="two" name="two" value="2 NUMBERS" formaction="/hs2as">
+        <input type="submit" class="options" id="three" name="three" value="3 NUMBERS" formaction="/hs3as">
 
         <h2 id="md">Multiplication/Division</h2>
-        <input type="submit" class="options" id="twomd" name="twomd" value="2 NUMBERS" formaction="/twomd">
-        <input type="submit" class="options" id="threemd" name="threemd" value="3 NUMBERS" formaction="/threemd">
+        <input type="submit" class="options" id="twomd" name="twomd" value="2 NUMBERS" formaction="/hs2md">
+        <input type="submit" class="options" id="threemd" name="threemd" value="3 NUMBERS" formaction="/hs3md">
 
         <h2 id="rem">Remainders</h2>
-        <input type="submit" class="options" id="tworem" name="tworem" value="2 NUMBERS" formaction="/tworem">
-        <input type="submit" class="options" id="threerem" name="threerem" value="3 NUMBERS" formaction="/threerem">
+        <input type="submit" class="options" id="tworem" name="tworem" value="2 NUMBERS" formaction="/hs2rm">
+        <input type="submit" class="options" id="threerem" name="threerem" value="3 NUMBERS" formaction="/hs3rm">
         
         <input type="hidden" id="username" name="username" value="<%- username %>">
-        <input id="logout" class="ghost-button" name="logout" type="submit" value="Log Out" formaction="/logout">
     </form>
     
     <script>
@@ -101,38 +100,34 @@
         if(languages==""){
             languages="en";
         }
-        
-        var leaderboard = "<%- leaderboard %>";
-        
+                
         function switchlang(){
             //alert(languages);
 
             if(languages == "en"){
-                document.getElementById("leaderboard").value = "Leaderboard";
+                document.getElementById("back").value = "Back";
                 document.getElementById("language").value = "English";
-                document.getElementById("title").textContent = "Quick Math";
+                document.getElementById("title").textContent = "Leaderboard";
                 document.getElementById("two").value = "2 NUMBERS";
                 document.getElementById("three").value = "3 NUMBERS";
                 document.getElementById("twomd").value = "2 NUMBERS";
                 document.getElementById("threemd").value = "3 NUMBERS";
                 document.getElementById("tworem").value = "2 NUMBERS";
                 document.getElementById("threerem").value = "3 NUMBERS";
-                document.getElementById("logout").value = "Log Out";
                 document.getElementById("as").textContent = "Addition/Subtraction";
                 document.getElementById("md").textContent = "Multiplication/Division";
                 document.getElementById("rem").textContent = "Remainder";
             }
             if(languages == "zh"){
-                document.getElementById("leaderboard").value = "排行榜";
+                document.getElementById("back").value = "退出";
                 document.getElementById("language").value = "中文";
-                document.getElementById("title").textContent = "快算";
+                document.getElementById("title").textContent = "排行榜";
                 document.getElementById("two").value = "两个数";
                 document.getElementById("three").value = "三个数";
                 document.getElementById("twomd").value = "两个数";
                 document.getElementById("threemd").value = "三个数";
                 document.getElementById("tworem").value = "两个数";
                 document.getElementById("threerem").value = "三个数";
-                document.getElementById("logout").value = "退出";
                 document.getElementById("as").textContent = "加减";
                 document.getElementById("md").textContent = "乘除";
                 document.getElementById("rem").textContent = "余数";

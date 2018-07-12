@@ -99,6 +99,7 @@ app.post('/language', function (req, res) {
     }else{
         lang = "en";
     }
+    console.log(req.body.title);
     db.run(`UPDATE users SET language = ? WHERE username = ?`, [lang, req.body.username], function(err) {
         if (err) {
             return console.log(err.message);
@@ -106,7 +107,13 @@ app.post('/language', function (req, res) {
             return console.log("updated language");
         }
     });
-    res.render('home', {language:lang, username:req.body.username});
+
+    if(req.body.title == "Quick Math"){
+        res.render('home', {language:lang, username:req.body.username});
+    }
+    if(req.body.title == "Leaderboard"){
+        res.render('leaderboard',{username: req.body.username, language:lang, error: null});
+    }
 });
 
 app.post('/two', function (req, res) {
@@ -150,61 +157,65 @@ app.post('/back', function (req, res) {
     console.log(req.body.streak);
     console.log(req.body.lang);
     console.log(req.body.username);*/
-    db.get(`SELECT ` + req.body.hs+ ` FROM users WHERE username = ?`, [req.body.username], function(err, row){
-        if (err) {
-            return console.log(err.message);
-        }else{
-            var rowatr;
-            if(req.body.hs == "hs2as"){
-                rowatr = row.hs2as;
-            }
-            if(req.body.hs == "hs3as"){
-                rowatr = row.hs3as;
-            }
-            if(req.body.hs == "hs2md"){
-                rowatr = row.hs2md;
-            }
-            if(req.body.hs == "hs3md"){
-                rowatr = row.hs3md;
-            }
-            if(req.body.hs == "hs2rm"){
-                rowatr = row.hs2rm;
-            }
-            if(req.body.hs == "hs3rm"){
-                rowatr = row.hs3rm;
-            }
-            if(req.body.streak>0){
-                let sql = `UPDATE users 
-                        SET totalsolved = totalsolved + `+req.body.streak+`
-                        WHERE username = ?`;
-                db.run(sql, [req.body.username], function(err) {
-                    if (err) {
-                        return console.log(err.message);
-                    }else{
-                        return console.log("updated total solved!");
-                    }
-                });
-            }
-            if(rowatr < req.body.streak){
-                sql = `UPDATE users 
-                            SET `+req.body.hs+` = ?
-                            WHERE username = ?`;
-                db.run(sql, [req.body.streak, req.body.username], function(err) {
-                    if (err) {
-                        return console.log(err.message);
-                    }else{
-                        return console.log("updated high score!");
-                    }
-                });                
+    if(req.body.title == "Problem"){
+        db.get(`SELECT ` + req.body.hs+ ` FROM users WHERE username = ?`, [req.body.username], function(err, row){
+            if (err) {
+                return console.log(err.message);
             }else{
-                console.log("high score stays the same!");
+                var rowatr;
+                if(req.body.hs == "hs2as"){
+                    rowatr = row.hs2as;
+                }
+                if(req.body.hs == "hs3as"){
+                    rowatr = row.hs3as;
+                }
+                if(req.body.hs == "hs2md"){
+                    rowatr = row.hs2md;
+                }
+                if(req.body.hs == "hs3md"){
+                    rowatr = row.hs3md;
+                }
+                if(req.body.hs == "hs2rm"){
+                    rowatr = row.hs2rm;
+                }
+                if(req.body.hs == "hs3rm"){
+                    rowatr = row.hs3rm;
+                }
+                if(req.body.streak>0){
+                    let sql = `UPDATE users 
+                            SET totalsolved = totalsolved + `+req.body.streak+`
+                            WHERE username = ?`;
+                    db.run(sql, [req.body.username], function(err) {
+                        if (err) {
+                            return console.log(err.message);
+                        }else{
+                            return console.log("updated total solved!");
+                        }
+                    });
+                }
+                if(rowatr < req.body.streak){
+                    sql = `UPDATE users 
+                                SET `+req.body.hs+` = ?
+                                WHERE username = ?`;
+                    db.run(sql, [req.body.streak, req.body.username], function(err) {
+                        if (err) {
+                            return console.log(err.message);
+                        }else{
+                            return console.log("updated high score!");
+                        }
+                    });                
+                }else{
+                    console.log("high score stays the same!");
+                }
+                
             }
-            
-        }
-    })
-    
+        })
+        res.render('home', {language:lang, username:req.body.username});
+    }
+    if(req.body.title == "Leaderboard"){
+        res.render('home',{username: req.body.username, language:lang});
+    }
     //console.log("back is clicked.");
-    res.render('home', {language: req.body.lang, username:req.body.username});
 });
 
 app.post('/logout', function(req, res){
@@ -219,7 +230,22 @@ app.post('/logout', function(req, res){
 
 app.post('/leaderboard', function(req, res){
     console.log("Updating leaderboard.");
-    res.render('leaderboard',{leaderboard: req.body.username +" logged out.", error: null});
+    //Hs3as hs3as, Hs2md hs2md, Hs3md hs3md, Hs2rm hs2rm, Hs3rm hs3rm
+    // hs2as: row.hs2as, hs3as: row.hs3as, hs2md: row.hs2md, hs3md: row.hs3md, hs2rm: row.hs2rm, hs3rm: row.hs3rm
+    /*db.all(`SELECT Username username, Hs2as hs2as FROM users ORDER BY hs2as DESC`, [], (err, rows) =>{
+        if(err){
+          return console.error(err.message);
+        }else{
+            var usernames = [];
+            rows.forEach((row)=>{
+                
+            });
+            
+        }
+    });*/
+
+    res.render('leaderboard',{username: req.body.username, language:lang, error: null});
+    
 })
 
 app.listen(3000, function () {
