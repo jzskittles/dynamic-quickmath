@@ -111,12 +111,17 @@
         var languages = "en";
 
         function switchlang(){
+            var lang = "<%- language %>";
+            if (lang !== null){
+                languages = lang;
+            }
             var language_which = document.getElementsByName("languages");
             for(var i = 0; i < language_which.length; i++){
                 if(language_which[i].checked){
                     languages = language_which[i].value;
                 }
             }
+            
             if(languages==""){
                 languages="en";
             }            

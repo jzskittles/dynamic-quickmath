@@ -35,6 +35,17 @@
         font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
         text-align: center;
     }
+    a {
+        width: 100%;
+        text-align: center;
+        text-decoration: none;
+        color:white;
+    }
+    .nums{
+        width:320px;
+        height:70px;
+        overflow: hidden;
+    }
     #two,#twomd,#tworem{
         float:left;
     }
@@ -90,9 +101,12 @@
         if(languages==""){
             languages="en";
         }
-
+        
+        var leaderboard = "<%- leaderboard %>";
+        
         function switchlang(){
             //alert(languages);
+
             if(languages == "en"){
                 document.getElementById("leaderboard").value = "Leaderboard";
                 document.getElementById("language").value = "English";

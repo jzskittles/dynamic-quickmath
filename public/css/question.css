@@ -6,41 +6,6 @@ body {
     max-width:320px;
     touch-action: manipulation;
 }
-#curvedarrow {
-    position: relative;
-    width: 0;
-    height: 0;
-    display: inline-block;
-    border-top: 9px solid transparent;
-    border-right: 9px solid red;
-    -webkit-transform: rotate(10deg);
-    -moz-transform: rotate(10deg);
-    -ms-transform: rotate(10deg);
-    -o-transform: rotate(10deg);
-
-    -moz-transform: scaleX(-1);
-    -o-transform: scaleX(-1);
-    -webkit-transform: scaleX(-1);
-    transform: scaleX(-1);
-    filter: FlipH;
-    -ms-filter: "FlipH";
-}
-#curvedarrow:after {
-    content: "";
-    position: absolute;
-    display: inline-block;
-    border: 0 solid transparent;
-    border-top: 3px solid red;
-    border-radius: 20px 0 0 0;
-    top: -12px;
-    left: -9px;
-    width: 12px;
-    height: 12px;
-    -webkit-transform: rotate(45deg);
-    -moz-transform: rotate(45deg);
-    -ms-transform: rotate(45deg);
-    -o-transform: rotate(45deg);
-}
 #streak{
     float:right;
     overflow: auto;

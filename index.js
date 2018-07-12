@@ -9,7 +9,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
 
 app.get('/', function (req, res) {
-  res.render('login', {logging: null, error: null});
+  res.render('login', {logging: null, language: "en", error: null});
 })
 
 
@@ -27,6 +27,9 @@ app.post('/', function (req, res) {
   let username = req.body.username;
   let password = req.body.password;
   let language = req.body.languages;
+  console.log(language);
+  
+  
 
   var exists = false;
   db.all(`SELECT Username username, Password password, Language language FROM users`, [], (err, rows) =>{
@@ -38,13 +41,21 @@ app.post('/', function (req, res) {
             exists = true;
             if(req.body.password === row.password){
                 console.log("Logging in.");
-                /*if(row.language=== "en"){
-                    language = "Language: English";
-                }else{
-                    language = "语言: 中文";
-                }*/
+                if(language == undefined){
+                    language = row.language;
+                }
+                if(language !== row.language){
+                    db.run(`UPDATE users SET language = ? WHERE username = ?`, [language, req.body.username], function(err) {
+                        if (err) {
+                            return console.log(err.message);
+                        }else{
+                            return console.log("updated language to "+language);
+                        }
+                    });
+                }
+                
                 lang = row.language;
-                return res.render('home', {language: row.language, username: row.username});
+                return res.render('home', {language: language, username: row.username});
             }else{
                 res.render('login', {logging: `Wrong password, ${username}!`, error: null});
                 console.log("Wrong password.");
@@ -135,10 +146,10 @@ app.post('/threerem', function (req, res) {
 });
 
 app.post('/back', function (req, res) {
-    console.log(req.body.hs);
+    /*console.log(req.body.hs);
     console.log(req.body.streak);
     console.log(req.body.lang);
-    console.log(req.body.username);
+    console.log(req.body.username);*/
     db.get(`SELECT ` + req.body.hs+ ` FROM users WHERE username = ?`, [req.body.username], function(err, row){
         if (err) {
             return console.log(err.message);
@@ -184,24 +195,31 @@ app.post('/back', function (req, res) {
                     }else{
                         return console.log("updated high score!");
                     }
-                });
-                
-                
+                });                
             }else{
-                
-                return console.log("high score stays the same!");
+                console.log("high score stays the same!");
             }
             
         }
     })
     
-    console.log("back is clicked.");
+    //console.log("back is clicked.");
     res.render('home', {language: req.body.lang, username:req.body.username});
 });
 
 app.post('/logout', function(req, res){
     console.log(req.body.username+ " logged out.");
-    res.render('login',{logging: req.body.username +" logged out.", error: null});
+    if(lang == "en"){
+        res.render('login',{logging: req.body.username +" logged out.", language:lang, error: null});
+    }
+    if(lang == "zh"){
+        res.render('login', {logging: req.body.username +" 下线了.", language:lang, error: null});
+    }
+})
+
+app.post('/leaderboard', function(req, res){
+    console.log("Updating leaderboard.");
+    res.render('leaderboard',{leaderboard: req.body.username +" logged out.", error: null});
 })
 
 app.listen(3000, function () {
