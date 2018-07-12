@@ -63,14 +63,17 @@ app.post('/', function (req, res) {
         }        
     });
     if(!exists){
-        db.run(`INSERT INTO users(username, password, language, hs2as, hs3as, hs2md, hs3md, hs2rm, hs3rm, totalsolved) VALUES (?,?,?,?,?,?,?,?,?,?)`, [username,password,req.body.languages, 0, 0, 0, 0, 0, 0, 0], function(err) {
+        if(language === undefined){
+            language = "en";
+        }
+        db.run(`INSERT INTO users(username, password, language, hs2as, hs3as, hs2md, hs3md, hs2rm, hs3rm, totalsolved) VALUES (?,?,?,?,?,?,?,?,?,?)`, [username,password,language, 0, 0, 0, 0, 0, 0, 0], function(err) {
             if (err) {
                 res.render('login', {logging: null, language:req.body.language, error: 'Error, please try again'});
                 return console.log(err.message);
             }else{
                 console.log(`A row has been inserted with rowid ${this.lastID}`);
                 lang = req.body.language;
-                return res.render('home', {language: req.body.language, username: row.username});
+                return res.render('home', {language: language, username: req.body.username});
             }
         });
     }
@@ -82,7 +85,6 @@ app.get('/main', function (req, res) {
 });
 
 app.post('/language', function (req, res) {
-    //console.log(req.body.language + " is clicked.");
     let language = req.body.language;
     if(language === "English"){
         lang = "zh";
@@ -92,8 +94,6 @@ app.post('/language', function (req, res) {
     db.run(`UPDATE users SET language = ? WHERE username = ?`, [lang, req.body.username], function(err) {
         if (err) {
             return console.log(err.message);
-        }else{
-            return console.log("updated language");
         }
     });
     if(req.body.title === "Quick Math"){
@@ -104,17 +104,37 @@ app.post('/language', function (req, res) {
             res.render('leaderboard',{username: req.body.username, language:lang, selection: true, datauser: null, datahs: null, category: null, error: null});
         }
         if(req.body.selection === "ranking"){
+            var category = req.body.category;
             var usernames = [];
-            var highscore2as = [];
-            db.all(`SELECT username, hs2as FROM users ORDER BY hs2as DESC`, [], (err, rows) =>{
+            var highscores = [];
+            db.all(`SELECT * FROM users ORDER BY `+category+` DESC`, [], (err, rows) =>{
                 if(err){
                 return console.error(err.message);
-                }else{
+                }else{ 
                     rows.forEach((row)=>{
+                        var rowatr;
+                        if(category === "hs2as"){
+                            rowatr = row.hs2as;
+                        }
+                        if(category === "hs3as"){
+                            rowatr = row.hs3as;
+                        }
+                        if(category === "hs2md"){
+                            rowatr = row.hs2md;
+                        }
+                        if(category === "hs3md"){
+                            rowatr = row.hs3md;
+                        }
+                        if(category === "hs2rm"){
+                            rowatr = row.hs2rm;
+                        }
+                        if(category === "hs3rm"){
+                            rowatr = row.hs3rm;
+                        }
                         usernames.push(row.username);
-                        highscore2as.push(row.hs2as);
+                        highscores.push(rowatr);
                     }); 
-                    res.render('leaderboard',{username: req.body.username, language:lang, selection:false, datauser: usernames, datahs: highscore2as, category:"hs2as", error: null});
+                    res.render('leaderboard',{username: req.body.username, language:lang, selection:false, datauser: usernames, datahs: highscores, category:category, error: null});
                 }
             });
         }
@@ -122,7 +142,6 @@ app.post('/language', function (req, res) {
 });
 
 app.post('/two', function (req, res) {
-    console.log(req.body.two + " is clicked.");
     let username = req.body.username;
     if(req.body.title === "Quick Math"){
         res.render('problem', {category: "two", sign: "+", language:lang, hs:"hs2as", username:username});
@@ -145,40 +164,116 @@ app.post('/two', function (req, res) {
 });
 
 app.post('/three', function (req, res) {
-    console.log(req.body.three + " is clicked.");
     let username = req.body.username;
-    res.render('problem', {category: "three", sign: "+", language:lang, hs: "hs3as", username:username});
+    if(req.body.title === "Quick Math"){
+        res.render('problem', {category: "three", sign: "+", language:lang, hs: "hs3as", username:username});
+    }
+    if(req.body.title === "Leaderboard"){
+        var usernames = [];
+        var highscore3as = [];
+        db.all(`SELECT username, hs3as FROM users ORDER BY hs3as DESC`, [], (err, rows) =>{
+            if(err){
+              return console.error(err.message);
+            }else{
+                rows.forEach((row)=>{
+                    usernames.push(row.username);
+                    highscore3as.push(row.hs3as);
+                }); 
+                res.render('leaderboard',{username: req.body.username, language:lang, selection:false, datauser: usernames, datahs: highscore3as, category:"hs3as", error: null});
+            }
+        });
+    }
 });
 
 app.post('/twomd', function (req, res) {
-    console.log(req.body.twomd + " is clicked.");
     let username = req.body.username;
-    res.render('problem', {category: "two", sign: "x", language:lang, hs:"hs2md", username:username});
+    if(req.body.title === "Quick Math"){
+        res.render('problem', {category: "two", sign: "x", language:lang, hs:"hs2md", username:username});
+    }
+    if(req.body.title === "Leaderboard"){
+        var usernames = [];
+        var highscore2md = [];
+        db.all(`SELECT username, hs2md FROM users ORDER BY hs2md DESC`, [], (err, rows) =>{
+            if(err){
+              return console.error(err.message);
+            }else{
+                rows.forEach((row)=>{
+                    usernames.push(row.username);
+                    highscore2md.push(row.hs2md);
+                }); 
+                res.render('leaderboard',{username: req.body.username, language:lang, selection:false, datauser: usernames, datahs: highscore2md, category:"hs2md", error: null});
+            }
+        });
+    }
 });
 
 app.post('/threemd', function (req, res) {
-    console.log(req.body.threemd + " is clicked.");
     let username = req.body.username;
+    if(req.body.title === "Quick Math"){
     res.render('problem', {category: "three", sign: "x", language:lang, hs:"hs3md", username:username});
+    }
+    if(req.body.title === "Leaderboard"){
+        var usernames = [];
+        var highscore3md = [];
+        db.all(`SELECT username, hs3md FROM users ORDER BY hs3md DESC`, [], (err, rows) =>{
+            if(err){
+              return console.error(err.message);
+            }else{
+                rows.forEach((row)=>{
+                    usernames.push(row.username);
+                    highscore3md.push(row.hs3md);
+                }); 
+                res.render('leaderboard',{username: req.body.username, language:lang, selection:false, datauser: usernames, datahs: highscore3md, category:"hs3md", error: null});
+            }
+        });
+    }
 });
 
 app.post('/tworem', function (req, res) {
-    console.log(req.body.tworem + " is clicked.");
     let username = req.body.username;
-    res.render('problem', {category: "two", sign: "", language:lang, hs:"hs2rm", username:username});
+    if(req.body.title === "Quick Math"){
+        res.render('problem', {category: "two", sign: "", language:lang, hs:"hs2rm", username:username});
+    }
+    if(req.body.title === "Leaderboard"){
+        var usernames = [];
+        var highscore2rm = [];
+        db.all(`SELECT username, hs2rm FROM users ORDER BY hs2rm DESC`, [], (err, rows) =>{
+            if(err){
+              return console.error(err.message);
+            }else{
+                rows.forEach((row)=>{
+                    usernames.push(row.username);
+                    highscore2rm.push(row.hs2rm);
+                }); 
+                res.render('leaderboard',{username: req.body.username, language:lang, selection:false, datauser: usernames, datahs: highscore2rm, category:"hs2rm", error: null});
+            }
+        });
+    }
 });
 
 app.post('/threerem', function (req, res) {
-    console.log(req.body.threerem + " is clicked.");
     let username = req.body.username;
-    res.render('problem', {category: "three", sign: "", language:lang, hs:"hs3rm", username:username});
+    if(req.body.title === "Quick Math"){
+        res.render('problem', {category: "three", sign: "", language:lang, hs:"hs3rm", username:username});
+    }
+    if(req.body.title === "Leaderboard"){
+        var usernames = [];
+        var highscore3rm = [];
+        db.all(`SELECT username, hs3rm FROM users ORDER BY hs3rm DESC`, [], (err, rows) =>{
+            if(err){
+              return console.error(err.message);
+            }else{
+                rows.forEach((row)=>{
+                    usernames.push(row.username);
+                    highscore3rm.push(row.hs3rm);
+                }); 
+                res.render('leaderboard',{username: req.body.username, language:lang, selection:false, datauser: usernames, datahs: highscore3rm, category:"hs3rm", error: null});
+            }
+        });
+    }
 });
 
 app.post('/back', function (req, res) {
-    /*console.log(req.body.hs);
-    console.log(req.body.streak);
-    console.log(req.body.lang);
-    console.log(req.body.username);*/
     if(req.body.title === "Problem"){
         db.get(`SELECT ` + req.body.hs+ ` FROM users WHERE username = ?`, [req.body.username], function(err, row){
             if (err) {
@@ -226,16 +321,11 @@ app.post('/back', function (req, res) {
                             return console.log("updated high score!");
                         }
                     });                
-                }else{
-                    console.log("high score stays the same!");
-                }
-                
+                }    
             }
         })
         res.render('home', {language:lang, username:req.body.username});
     }
-    
-    //console.log("back is clicked.");
 });
 
 app.post('/backl', function(req, res){
@@ -259,19 +349,6 @@ app.post('/logout', function(req, res){
 
 app.post('/leaderboard', function(req, res){
     console.log("Updating leaderboard.");
-    //Hs3as hs3as, Hs2md hs2md, Hs3md hs3md, Hs2rm hs2rm, Hs3rm hs3rm
-    // hs2as: row.hs2as, hs3as: row.hs3as, hs2md: row.hs2md, hs3md: row.hs3md, hs2rm: row.hs2rm, hs3rm: row.hs3rm
-    /*db.all(`SELECT Username username, Hs2as hs2as FROM users ORDER BY hs2as DESC`, [], (err, rows) =>{
-        if(err){
-          return console.error(err.message);
-        }else{
-            var usernames = [];
-            rows.forEach((row)=>{
-                
-            });
-            
-        }
-    });*/
     res.render('leaderboard',{username: req.body.username, language:lang, selection: true, datauser: null, datahs: null, category: null, error: null});
 });
 

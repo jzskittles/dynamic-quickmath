@@ -74,9 +74,9 @@
     .ghost-button:hover {
         border:2px solid #515151;
     }
-    #left{float:left;width:90px;font-size:24px;}
-    #right{float:right;width:90px;font-size:24px;}
-    #center{margin:auto auto;width:90px;font-size:24px;}
+    #left{float:left;width:30px;font-size:24px;text-align:center;}
+    #right{float:right;width:75px;font-size:24px;text-align:center;}
+    #center{margin:auto auto;width:165px;font-size:24px;text-align:center;}
     img{
         width:30px;
         height:30px;
@@ -157,7 +157,6 @@
     <% if(!selection){ %>
         <script>
             var category = "<%- category %>";
-            //alert(category);
             if(languages == "en"){
                 if(category.substring(3)==="as"){
                     document.getElementById("category").textContent = "Addition/Subtraction: \r\n" + category.substring(2,3)+ " NUMBERS";
@@ -196,9 +195,6 @@
             var container = document.getElementById("container");
             var ranks = 1;
             for(i=0;i<arrusers.length;i++){
-                //container.appendChild(document.createTextNode(arrhs[i]));
-                //alert("new node" + arrusers[i]+" "+arrhs[i]);
-
                 var input = document.createElement("div");
                 input.name = "rank "+ (i+1);
                 input.style.width = "295px";
@@ -221,7 +217,6 @@
                 if(arrusers[i] === document.getElementById("username").value){
                     input.style.backgroundColor = "yellow";
                 }
-                
                 container.appendChild(input);
             }
         </script>
