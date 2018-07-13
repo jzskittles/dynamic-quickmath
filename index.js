@@ -55,7 +55,7 @@ app.post('/', function (req, res) {
                 }
                 
                 lang = row.language;
-                return res.render('home', {language: language, username: row.username});
+                return res.render('home', {language: language, username: row.username, selection:true});
             }else{
                 res.render('login', {logging: `Wrong password, ${username}!`, language:row.language, error: null});
                 console.log("Wrong password.");
@@ -72,8 +72,8 @@ app.post('/', function (req, res) {
                 return console.log(err.message);
             }else{
                 console.log(`A row has been inserted with rowid ${this.lastID}`);
-                lang = req.body.language;
-                return res.render('home', {language: language, username: req.body.username});
+                lang = language;
+                return res.render('home', {language: language, username: req.body.username, selection:true});
             }
         });
     }
@@ -81,7 +81,7 @@ app.post('/', function (req, res) {
 });
 
 app.get('/main', function (req, res) {
-    res.render('home', {language: null, error: null, username: null});
+    res.render('home', {language: null, error: null, username: null, selection:null});
 });
 
 app.post('/language', function (req, res) {
@@ -97,7 +97,12 @@ app.post('/language', function (req, res) {
         }
     });
     if(req.body.title === "Quick Math"){
-        res.render('home', {language:lang, username:req.body.username});
+        if(req.body.selection === "selection"){
+            res.render('home', {language:lang, username:req.body.username, selection:true});
+        }
+        if(req.body.selection === "logpg"){
+            res.render('home', {language:lang, username:req.body.username, selection:false});
+        }
     }
     if(req.body.title === "Leaderboard"){
         if(req.body.selection === "selection"){
@@ -144,7 +149,18 @@ app.post('/language', function (req, res) {
 app.post('/two', function (req, res) {
     let username = req.body.username;
     if(req.body.title === "Quick Math"){
-        res.render('problem', {category: "two", sign: "+", language:lang, hs:"hs2as", username:username});
+        var date = new Date();
+        var current_time = date.getTime();
+        console.log(current_time);
+        var session = username +""+ current_time + "hs2as";
+        db.run(`INSERT INTO problog(customID, username, timestart, category) VALUES (?, ?, CURRENT_TIMESTAMP, "hs2as")`, [session, username], function(err) {
+            if (err) {
+                return console.log(err.message);
+            }else{
+                console.log(`A row has been inserted with rowid ${this.lastID}`);
+                res.render('problem', {category: "two", sign: "+", language:lang, hs:"hs2as", username:username, session:session});
+            }
+        });
     }
     if(req.body.title === "Leaderboard"){
         var usernames = [];
@@ -166,7 +182,18 @@ app.post('/two', function (req, res) {
 app.post('/three', function (req, res) {
     let username = req.body.username;
     if(req.body.title === "Quick Math"){
-        res.render('problem', {category: "three", sign: "+", language:lang, hs: "hs3as", username:username});
+        var date = new Date();
+        var current_time = date.getTime();
+        console.log(current_time);
+        var session = username +""+ current_time + "hs2as";
+        db.run(`INSERT INTO problog(customID, username, timestart, category) VALUES (?, ?, CURRENT_TIMESTAMP, "hs2as")`, [session, username], function(err) {
+            if (err) {
+                return console.log(err.message);
+            }else{
+                console.log(`A row has been inserted with rowid ${this.lastID}`);
+                res.render('problem', {category: "three", sign: "+", language:lang, hs: "hs3as", username:username, session:session});
+            }
+        });
     }
     if(req.body.title === "Leaderboard"){
         var usernames = [];
@@ -188,7 +215,18 @@ app.post('/three', function (req, res) {
 app.post('/twomd', function (req, res) {
     let username = req.body.username;
     if(req.body.title === "Quick Math"){
-        res.render('problem', {category: "two", sign: "x", language:lang, hs:"hs2md", username:username});
+        var date = new Date();
+        var current_time = date.getTime();
+        console.log(current_time);
+        var session = username +""+ current_time + "hs2as";
+        db.run(`INSERT INTO problog(customID, username, timestart, category) VALUES (?, ?, CURRENT_TIMESTAMP, "hs2as")`, [session, username], function(err) {
+            if (err) {
+                return console.log(err.message);
+            }else{
+                console.log(`A row has been inserted with rowid ${this.lastID}`);
+                res.render('problem', {category: "two", sign: "x", language:lang, hs:"hs2md", username:username, session:session});
+            }
+        });
     }
     if(req.body.title === "Leaderboard"){
         var usernames = [];
@@ -210,7 +248,18 @@ app.post('/twomd', function (req, res) {
 app.post('/threemd', function (req, res) {
     let username = req.body.username;
     if(req.body.title === "Quick Math"){
-    res.render('problem', {category: "three", sign: "x", language:lang, hs:"hs3md", username:username});
+        var date = new Date();
+        var current_time = date.getTime();
+        console.log(current_time);
+        var session = username +""+ current_time + "hs2as";
+        db.run(`INSERT INTO problog(customID, username, timestart, category) VALUES (?, ?, CURRENT_TIMESTAMP, "hs2as")`, [session, username], function(err) {
+            if (err) {
+                return console.log(err.message);
+            }else{
+                console.log(`A row has been inserted with rowid ${this.lastID}`);
+                res.render('problem', {category: "three", sign: "x", language:lang, hs:"hs3md", username:username, session:session});
+            }
+        });
     }
     if(req.body.title === "Leaderboard"){
         var usernames = [];
@@ -232,7 +281,18 @@ app.post('/threemd', function (req, res) {
 app.post('/tworem', function (req, res) {
     let username = req.body.username;
     if(req.body.title === "Quick Math"){
-        res.render('problem', {category: "two", sign: "", language:lang, hs:"hs2rm", username:username});
+        var date = new Date();
+        var current_time = date.getTime();
+        console.log(current_time);
+        var session = username +""+ current_time + "hs2as";
+        db.run(`INSERT INTO problog(customID, username, timestart, category) VALUES (?, ?, CURRENT_TIMESTAMP, "hs2as")`, [session, username], function(err) {
+            if (err) {
+                return console.log(err.message);
+            }else{
+                console.log(`A row has been inserted with rowid ${this.lastID}`);
+                res.render('problem', {category: "two", sign: "", language:lang, hs:"hs2rm", username:username, session:session});
+            }
+        });
     }
     if(req.body.title === "Leaderboard"){
         var usernames = [];
@@ -254,7 +314,18 @@ app.post('/tworem', function (req, res) {
 app.post('/threerem', function (req, res) {
     let username = req.body.username;
     if(req.body.title === "Quick Math"){
-        res.render('problem', {category: "three", sign: "", language:lang, hs:"hs3rm", username:username});
+        var date = new Date();
+        var current_time = date.getTime();
+        console.log(current_time);
+        var session = username +""+ current_time + "hs2as";
+        db.run(`INSERT INTO problog(customID, username, timestart, category) VALUES (?, ?, CURRENT_TIMESTAMP, "hs2as")`, [session, username], function(err) {
+            if (err) {
+                return console.log(err.message);
+            }else{
+                console.log(`A row has been inserted with rowid ${this.lastID}`);
+                res.render('problem', {category: "three", sign: "", language:lang, hs:"hs3rm", username:username, session:session});
+            }
+        });
     }
     if(req.body.title === "Leaderboard"){
         var usernames = [];
@@ -298,9 +369,10 @@ app.post('/back', function (req, res) {
                 if(req.body.hs === "hs3rm"){
                     rowatr = row.hs3rm;
                 }
-                if(req.body.streak>0){
+                if(req.body.streaktotal>0){
+                    //console.log(req.body.streaktotal);
                     let sql = `UPDATE users 
-                            SET totalsolved = totalsolved + `+req.body.streak+`
+                            SET totalsolved = totalsolved + `+req.body.streaktotal+`
                             WHERE username = ?`;
                     db.run(sql, [req.body.username], function(err) {
                         if (err) {
@@ -309,12 +381,29 @@ app.post('/back', function (req, res) {
                             return console.log("updated total solved!");
                         }
                     });
+                    db.run(`UPDATE problog SET category = ?, numsolved = ?, timeend = CURRENT_TIMESTAMP WHERE customID = ?`, [req.body.hs, req.body.streaktotal, req.body.session], function(err) {
+                        if (err) {
+                            return console.log(err.message);
+                        }else{
+                            console.log(`A row has been inserted with rowid ${this.lastID}`);
+                            //res.render('problem', {category: "two", sign: "+", language:lang, hs:"hs2as", username:username});
+                        }
+                    });
+                }else{
+                    db.run(`DELETE FROM problog WHERE customID = ?`, [req.body.session], function(err) {
+                        if (err) {
+                            return console.log(err.message);
+                        }else{
+                            console.log(`A row has been deleted.`);
+                            //res.render('problem', {category: "two", sign: "+", language:lang, hs:"hs2as", username:username});
+                        }
+                    });
                 }
-                if(rowatr < req.body.streak){
+                if(rowatr < req.body.higheststreak){
                     sql = `UPDATE users 
                                 SET `+req.body.hs+` = ?
                                 WHERE username = ?`;
-                    db.run(sql, [req.body.streak, req.body.username], function(err) {
+                    db.run(sql, [req.body.higheststreak, req.body.username], function(err) {
                         if (err) {
                             return console.log(err.message);
                         }else{
@@ -324,16 +413,22 @@ app.post('/back', function (req, res) {
                 }    
             }
         })
-        res.render('home', {language:lang, username:req.body.username});
+        res.render('home', {language:lang, username:req.body.username, selection:true});
     }
 });
 
 app.post('/backl', function(req, res){
     if(req.body.selection === "selection"){
-        res.render('home',{username: req.body.username, language:lang});
+        res.render('home',{username: req.body.username, language:lang, selection:true});
     }
     if(req.body.selection === "ranking"){
         res.render('leaderboard',{username: req.body.username, language:lang, selection: true, datauser: null, datahs: null, category: null, error: null});
+    }
+    if(req.body.selection === "logpg"){
+        res.render('home',{username: req.body.username, language:lang, selection: true});
+    }
+    if(req.body.selection === "log"){
+        res.render('home',{username: req.body.username, language:lang, selection: false});
     }
 });
 
@@ -348,8 +443,41 @@ app.post('/logout', function(req, res){
 });
 
 app.post('/leaderboard', function(req, res){
-    console.log("Updating leaderboard.");
+    //console.log("Updating leaderboard.");
     res.render('leaderboard',{username: req.body.username, language:lang, selection: true, datauser: null, datahs: null, category: null, error: null});
+});
+
+app.post('/log', function(req, res){
+    res.render('home',{username: req.body.username, language:lang, selection: false, error: null});
+});
+
+app.post('/full', function(req, res){
+    var usernames = [];
+    var timestarts = [];
+    var categories = [];
+    var numsolveds = [];
+    var timespent = [];
+    db.all(`SELECT * FROM problog WHERE username = ?`, [req.body.username], (err, rows) =>{
+        if(err){
+          return console.error(err.message);
+        }else{
+            rows.forEach((row)=>{
+                usernames.push(row.username);
+                timestarts.push(row.timestart);
+                categories.push(row.category);
+                numsolveds.push(row.numsolved);
+                var d2 = new Date(row.timeend);
+                var d1 = new Date(row.timestart);
+                var seconds = (d2-d1)/1000;
+                timespent.push(seconds);
+            }); 
+            res.render('log',{username: req.body.username, language:lang, selection:false, datauser: usernames, datatstart: timestarts, category: categories, num: numsolveds, datatspent: timespent, logtype: "Full"});
+        }
+    });
+});
+
+app.post('/daily', function(req, res){
+    res.render('log',{username: req.body.username, language:lang, selection:false, logtype: "Daily"});
 });
 
 app.listen(3000, function () {

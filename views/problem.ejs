@@ -9,22 +9,27 @@
 </head>
 
 <body>
-    <header>
-        <form action="/header" method="post">
-            <input id="back" type="submit" formaction="/back" value= "Back" style="background-color:crimson; border:0px; font-size: 16px; width:45px;">
-            <input type="hidden" id="doc" name="title" value="Problem">
-            <input id="hs" name="hs" type="hidden" value="<%- hs %>">
-            <input id="lang" name="lang" type="hidden" value="<%- language %>">
-            <input id="user" name="username" type="hidden" value="<%- username %>">
-            <div style="float:right; margin-top:10px;">
-                <input id="streakhs" name="streak" type="hidden" value="0">
-                <h2 id="streak">0</h2>
-                <h2 style="float: right"><img src="/images/flame.png" alt="streak flame"></h2>
-            </div>
-        </form>
+    <form action="/header" method="post">
+        <input id="back" type="submit" formaction="/back" value= "Back" style="background-color:crimson; border:2px; font-size: 20px; width:75px; text-align:center; color:white;">
+        <input type="hidden" id="doc" name="title" value="Problem">
+        <input id="hs" name="hs" type="hidden" value="<%- hs %>">
+        <input id="lang" name="lang" type="hidden" value="<%- language %>">
+        <input id="user" name="username" type="hidden" value="<%- username %>">
+        <input id="session" name="session" type="hidden" value="<%- session %>">
         
+
+        <div style="float:right; margin-top:10px;">
             
-    </header>
+            <input id="streakhs" name="streak" type="hidden" value="0">
+            <input id="streaktotal" name="streaktotal" type="hidden" value="0">
+            <h2 id="streak">0</h2>
+            <h2 style="float: right"><img src="/images/flame.png" alt="streak flame"></h2>
+            <input id="higheststreak" name="higheststreak" type="hidden" value="0"> <!--for this game-->
+                <input id="dbhigheststreak" name="dbhigheststreak" type="hidden" value="0"> <!--for all plays across all players-->
+                <h2 id="hstreak" style="text-align: right; color:crimson;">0</h2>
+        </div>
+        
+    </form>
 
     <table id="probtable" style="display:block">
         <tr>
@@ -52,6 +57,8 @@
             var streaknum = 0;
             
             var languages = "<%- language %>";
+            var session = "<%- session%>";
+            console.log(session);
 
             if(languages==="en"){
                 document.getElementById("enter").textContent="ENTER";
@@ -59,7 +66,10 @@
             }
             if(languages==="zh"){
                 document.getElementById("enter").textContent="抢答";
+                document.getElementById("enter").style.fontWeight="bold";
                 document.getElementById("back").value = "退出";
+                document.getElementById("back").style.fontWeight="bold";
+
             }
             function addText(clicked_id) {
                 if(document.getElementById("answer").textContent.length<12)
@@ -123,14 +133,23 @@
                 items[0].textContent = a;
                 items[2].textContent = b;
             }
+            var totalsolved = 0;
+            var highscore = 0;
             function compare(){
                 var answers = document.getElementById("answer").textContent;
                 
                 if(answers.substring(2) == result){
                     streaknum++;
+                    totalsolved++;
+                    if(streaknum>highscore){
+                        highscore = streaknum;
+                    }
                 }else{
                     streaknum=0;
                 }
+                document.getElementById("hstreak").textContent = highscore;
+                document.getElementById("higheststreak").value = highscore;
+                document.getElementById("streaktotal").value = totalsolved;
                 document.getElementById("streakhs").value = streaknum;
                 document.getElementById("streak").textContent = streaknum;
                 document.getElementById("answer").textContent = "= ";
@@ -290,22 +309,23 @@
                     items[4].textContent = c;
                 }    
             }
+            var totalsolved = 0;
             function compare(){
                 var answers = document.getElementById("answer").textContent;
                 
                 if(answers.substring(2) == result){
-                    streaknum++;                
+                    streaknum++;         
+                    totalsolved++;       
                 }else{
                     streaknum=0;
                 }
+                document.getElementById("streaktotal").value = totalsolved;
                 document.getElementById("streakhs").value = streaknum;
                 document.getElementById("streak").textContent = streaknum;
                 document.getElementById("answer").textContent = "= ";
                 randomNum();
-            }
-            
-            randomNum();
-                
+            } 
+            randomNum();        
         </script>
     <% } %>
 

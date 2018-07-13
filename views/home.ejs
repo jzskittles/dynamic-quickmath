@@ -42,11 +42,21 @@
         float:right;
     }
     #leaderboard{
-        margin:4px auto;
-        float:right;
+        width:125px;
+        font-size:20px;
+        text-align:center;
+        border:2px;
+        float:center;
+        background-color:lightsalmon;
     }
     input{
         border:0px;
+    }
+    #language{
+        float:right;width:100px;font-size:20px;text-align:center;border:2px;background-color:lightskyblue;
+    }
+    #log{
+        float:left;width:95px;font-size:20px;text-align:center;border:2px;background-color:lightgreen;
     }
 </style>
 
@@ -62,17 +72,25 @@
     
 
     <form action="/problem" method="post">
-        <input type="submit" id="language" name="language" value="<%- language %>" formaction="/language">
+        <input type="submit" id="language" name="language" value="<%- language %>" formaction="/language">        
+        <input type="submit" id="log" name="log"  value = "Log" formaction="/log">
         <input type="submit" id="leaderboard" name="leaderboard"  value = "Leaderboard" formaction="/leaderboard">
+        <input id="back" type="hidden" formaction="/backl" value= "Back" style="background-color:crimson; border:2px; font-size: 20px; float:center; width:95px; text-align:center; color:white;">
+
+
         <input type="hidden" id="doc" name="title" value="Quick Math">
 
         <div>
             <h1 id="title">Quick Math</h1>
         </div>
+        <% if(selection){ %>
+            <% include /Users/jenny/dynamic-quickmath/views/partials/selection %>
+        <% } %>
+        <% if(!selection){ %>
+            <% include /Users/jenny/dynamic-quickmath/views/partials/logpg %>
+        <% } %>
 
-        <% include /Users/jenny/dynamic-quickmath/views/partials/selection %>
-
-        <input id="logout" class="ghost-button" name="logout" type="submit" value="Log Out" formaction="/logout">
+        <input id="logout" class="ghost-button" name="logout" type="submit" style="font-size:20px;" value="Log Out" formaction="/logout">
     </form>
     
     <script>
@@ -101,22 +119,76 @@
             }
             if(languages == "zh"){
                 document.getElementById("leaderboard").value = "排行榜";
-                document.getElementById("language").value = "中文";
+                document.getElementById("leaderboard").style.fontWeight = "bold";
+                document.getElementById("log").value = "记录";
+                document.getElementById("log").style.fontWeight = "bold";
                 document.getElementById("title").textContent = "快算";
-                document.getElementById("two").value = "两个数";
-                document.getElementById("three").value = "三个数";
-                document.getElementById("twomd").value = "两个数";
-                document.getElementById("threemd").value = "三个数";
-                document.getElementById("tworem").value = "两个数";
-                document.getElementById("threerem").value = "三个数";
+                document.getElementById("title").style.fontWeight = "bold";
                 document.getElementById("logout").value = "退出";
+                document.getElementById("logout").style.fontWeight = "bold";
+                document.getElementById("language").value = "中文";
+                document.getElementById("language").style.fontWeight = "bold";
+                document.getElementById("two").value = "两个数";
+                document.getElementById("two").style.fontWeight = "bold";
+                document.getElementById("three").value = "三个数";
+                document.getElementById("three").style.fontWeight = "bold";
+                document.getElementById("twomd").value = "两个数";
+                document.getElementById("twomd").style.fontWeight = "bold";
+                document.getElementById("threemd").value = "三个数";
+                document.getElementById("threemd").style.fontWeight = "bold";
+                document.getElementById("tworem").value = "两个数";
+                document.getElementById("tworem").style.fontWeight = "bold";
+                document.getElementById("threerem").value = "三个数";
+                document.getElementById("threerem").style.fontWeight = "bold";
                 document.getElementById("as").textContent = "加减";
+                document.getElementById("as").style.fontWeight = "bold";
                 document.getElementById("md").textContent = "乘除";
+                document.getElementById("md").style.fontWeight = "bold";
                 document.getElementById("rem").textContent = "余数";
+                document.getElementById("rem").style.fontWeight = "bold";
             }
         }
         switchlang();
     </script>
+
+    <% if(!selection){ %>
+        <script>
+            document.getElementById("logout").setAttribute("type", "hidden");
+            document.getElementById("log").setAttribute("type","hidden");
+            document.getElementById("leaderboard").style.cssFloat="center";
+            document.getElementById("back").setAttribute("type","submit");
+            document.getElementById("back").style.cssFloat="left";
+
+
+            if(languages == "en"){
+                document.getElementById("leaderboard").value = "Leaderboard";
+                document.getElementById("language").value = "English";
+                document.getElementById("title").textContent = "Quick Math";
+                document.getElementById("fl").value = "Logs";
+                document.getElementById("full").value = "Full Log";
+                document.getElementById("daily").value = "Daily Log";
+                document.getElementById("back").value = "Back";
+            }
+            if(languages == "zh"){
+                document.getElementById("back").value = "退出";
+                document.getElementById("back").style.fontWeight = "bold";
+                document.getElementById("leaderboard").value = "排行榜";
+                document.getElementById("leaderboard").style.fontWeight = "bold";
+                document.getElementById("fl").textContent = "记录";
+                document.getElementById("fl").style.fontWeight = "bold";
+                document.getElementById("title").textContent = "快算";
+                document.getElementById("title").style.fontWeight = "bold";
+                document.getElementById("language").value = "中文";
+                document.getElementById("language").style.fontWeight = "bold";
+                document.getElementById("full").value = "所有";
+                document.getElementById("full").style.fontWeight = "bold";
+                document.getElementById("daily").value = "今天";
+                document.getElementById("daily").style.fontWeight = "bold";
+            }
+            
+        </script>
+    <% } %>
+
     <noscript>Sorry, it looks like your browser doesn't support Javascript or have it enabled.</noscript>
 
 </body>

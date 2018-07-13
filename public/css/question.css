@@ -2,7 +2,7 @@ html, body {
     min-height: 100%;
 }
 body {
-    margin:40px auto;
+    margin:auto auto;
     max-width:320px;
     touch-action: manipulation;
 }
