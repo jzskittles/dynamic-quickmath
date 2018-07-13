@@ -476,8 +476,25 @@ app.post('/full', function(req, res){
     });
 });
 
-app.post('/daily', function(req, res){
-    res.render('log',{username: req.body.username, language:lang, selection:false, logtype: "Daily"});
+app.post('/daily', function(req, res){//WHERE timestamp >= CURDATE()
+    db.all(`SELECT * FROM problog WHERE timestart >= CURDATE()`, [], (err, rows) =>{
+        if(err){
+          return console.error(err.message);
+        }else{
+            var totaltime = 0;
+            var totalsolved = 0;
+            rows.forEach((row)=>{
+                categories.push(row.category);
+                totalsolved+=row.numsolved;
+                var d2 = new Date(row.timeend);
+                var d1 = new Date(row.timestart);
+                var seconds = (d2-d1)/1000;
+                totaltime+=seconds;
+            }); 
+            res.render('log',{username: req.body.username, language:lang, selection:false, datauser: null, datatstart: timestarts, category: categories, num: numsolveds, datatspent: timespent, logtype: "Full"});
+        }
+    });
+    res.render('log',{username: req.body.username, language:lang, selection:false, datauser: usernames, datatstart: timestarts, category: categories, num: numsolveds, datatspent: totaltime, logtype: "Daily"});
 });
 
 app.listen(3000, function () {

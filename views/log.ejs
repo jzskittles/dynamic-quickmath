@@ -99,7 +99,7 @@
 
 <body>
     <form action="/log" method="post" id="container">
-        <input id="back" type="submit" formaction="/backl" value= "Back" style="background-color:crimson; border:2px; font-size: 20px; width:75px; text-align:center; color:white;">
+        <input id="back" type="submit" formaction="/backl" value= "Back" style="background-color:crimson; border:2px; font-size: 20px; width:95px; text-align:center; color:white;">
         <input type="submit" id="language" name="language" value="<%- language %>" formaction="/language">
         <input type="hidden" id="doc" name="title" value="Log">
         <div>
@@ -112,6 +112,11 @@
         <input type="hidden" id="username" name="username" value="<%- username %>">
         <input type="hidden" id="logtype" name="logtype" value="<%- logtype %>">
     </form>
+
+    <!--<div style="float:left;width:85px;"><h4 style="text-align:center;">Time</h4></div>
+    <div style="float:left;width:150px;"><h4 style="text-align:center;">Game Length</h4></div>
+    <div style="float:left;width:85px;"><h4 style="text-align:center;">Streak</h4></div>-->
+
     
     <script>
         var languages = "<%- language %>";
@@ -162,7 +167,31 @@
             </div>
         </div>
     </div>-->
-    
+    <!--<div style="float:left;height:54px;">
+        <div style="display:block;font-size:30px;margin-top:5px;">time</div>
+    </div>
+    <div id="right" style="text-align:right;margin-top:10px;">
+        <h4><img src="/images/flame.png" alt="streak flame"></h4>
+        <h4><div style="font-size:24px">0</div></h4></div>
+    <div style="display:block;text-align:center;margin-top:10px;font-size:24px;float:center;">'+arrtspent[i]+'</div>-->
+    <script>
+        if(datauser===""){
+            console.log("nolog");
+            document.getElementById("nolog").setAttribute("type","submit");
+            document.getElementById("nolog").className="ghost-button";
+        }else{
+            var datauser =  "<%- datauser %>";
+            var arrusers = datauser.split(",");
+            var datatstart = "<%- datatstart %>";
+            var arrtstart = datatstart.split(",");
+            var category = "<%- category %>";
+            var arrcategory = category.split(",");
+            var datanum = "<%- num %>";
+            var arrnum = datanum.split(",");
+            var datatspent = "<%- datatspent %>";
+            var arrtspent = datatspent.split(",");
+        }
+    </script>
 
     <% if(logtype === "Full"){ %>
         <script> 
@@ -184,11 +213,25 @@
                 document.getElementById("nolog").setAttribute("type","submit");
                 document.getElementById("nolog").className="ghost-button";
             }else{
+                var thisdate = "";
                 for(i=0;i<arrusers.length;i++){
                     var datetime = arrtstart[i].split(" ");
                     var date = datetime[0];
+                    if(date!==thisdate){
+                        var newday = document.createElement("h2");
+                        newday.textContent = date;
+                        container.appendChild(newday);
+                        var bigdiv = document.createElement("h3");
+                        bigdiv.style.display="block";
+                        bigdiv.style.width="320px";
+                        bigdiv.innerHTML='<div style="display:block;height:16px;"><div style="float:left;width:85px;"><h4 style="text-align:center;">Time</h4></div>'+
+                        '<div style="float:left;width:150px;"><h4 style="text-align:center;">Game Length</h4></div>'+
+                        '<div style="float:left;width:85px;"><h4 style="text-align:center;">Streak</h4></div></div>';
+                        container.appendChild(bigdiv);
+                    }
+                    thisdate = date;
                     var time = datetime[1];
-                    var categorytype = 0;
+                    /*var categorytype = 0;
                     if(arrcategory[i].substring(3)==="as"){
                         categorytype = "Add/Subtract";
                     }
@@ -197,23 +240,25 @@
                     }
                     if(arrcategory[i].substring(3)==="rm"){
                         categorytype = "Remainder";
-                    }
+                    }*/
                     var minutes = Math.floor(arrtspent[i]/60);
                     var seconds = arrtspent[i]%60;
+                    if(languages)
                     if(minutes>0){
                         arrtspent[i] = minutes+"m "+seconds+"s";
                     }else{
                         arrtspent[i] = seconds+"s";
                     }
+                    
                     var input = document.createElement("div");
                     input.name = "rank "+ (i+1);
                     input.style.width = "297px";
                     input.style.padding="10px 10px";
-                    input.style.height = "65px";
+                    input.style.height = "50px";
                     input.className = "ghost-button";//'<div style = "width:300px;height:65px;background-color:transparent;border:2px solid #ddd;padding:10px 10px;-webkit-transition: all 0.1s ease-in-out;-moz-transition: all 0.1s ease-in-out;-ms-transition: all 0.1s ease-in-out;-o-transition: all 0.1s ease-in-out;transition: all 0.1s ease-in-out;">'
-                    input.innerHTML = '<div style="display:block"> <div style="float:left;height:54px;"><div style="display:block; font-weight:bold;">'+arrusers[i]+'</div><div style="display:block">'+time.substring(0,5) +'---' +date+'</div>'
-                        +'<div style="display:block;">'+categorytype+' '+arrcategory[i].substring(2,3)+' NUMS'+'</div></div><div style="float:right;margin-top:5px;width:110px;"><div id="right" style="text-align:right;">'
-                        +'<h4><img src="/images/flame.png" alt="streak flame"></h4><h4>'+arrnum[i]+'</h4><div style="display:block;text-align:center;margin-top:5px;font-size:16px;">'+arrtspent[i]+'</div></div></div></div></div>';
+                    input.innerHTML = '<div style="float:left;height:54px;"><div style="display:block;font-size:30px;margin-top:5px;">'+time.substring(0,5)+'</div>'+'</div>'+
+                            '<div id="right" style="text-align:right;margin-top:10px;"><h4><img src="/images/flame.png" alt="streak flame"></h4><h4>'+arrnum[i]+'</h4></div>'+
+                                '<div style="display:block;text-align:center;margin-top:6px;font-size:28px;float:center;">'+arrtspent[i]+'</div>';
                     container.appendChild(input);
                 }
             }

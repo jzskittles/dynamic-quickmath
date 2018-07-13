@@ -16,22 +16,33 @@
         <input id="lang" name="lang" type="hidden" value="<%- language %>">
         <input id="user" name="username" type="hidden" value="<%- username %>">
         <input id="session" name="session" type="hidden" value="<%- session %>">
-        
-
-        <div style="float:right; margin-top:10px;">
-            
-            <input id="streakhs" name="streak" type="hidden" value="0">
-            <input id="streaktotal" name="streaktotal" type="hidden" value="0">
-            <h2 id="streak">0</h2>
-            <h2 style="float: right"><img src="/images/flame.png" alt="streak flame"></h2>
-            <input id="higheststreak" name="higheststreak" type="hidden" value="0"> <!--for this game-->
-                <input id="dbhigheststreak" name="dbhigheststreak" type="hidden" value="0"> <!--for all plays across all players-->
-                <h2 id="hstreak" style="text-align: right; color:crimson;">0</h2>
+        <div style="float:right;">
+            <!--<div style="width:110px;display:block;float:right;text-align:right;">
+                <h2 id="total" style="color:deepskyblue;display:inline;font-size:18px;text-align:right;font-family:sans-serif">Total:</h2>
+                <h2 id="totalnum" style="color:deepskyblue;display:inline;font-size:18px;text-align:right;font-family:sans-serif">0</h2>
+            </div>-->
+            <div>
+                <h2 id="currentbest" style="color:crimson;display:inline;font-size:18px;text-align:center;font-family:sans-serif;">Highest Streak:</h2>
+                <h2 id="hstreak" style="color:crimson;display:inline;font-size:18px;text-align:right;font-family:sans-serif;">0</h2>
+            </div>
         </div>
-        
+        <div style="display:block;">
+            
+            <!--<div style="width:105px;display:block;">
+                <h3 id="currentbest" style="color:crimson;display:inline;visibility:hidden;font-size:18px;text-align:center;font-family:'Courier New', Courier, monospace">Current Best</h>
+            </div>-->
+            <div style="display:block;margin-top:20px;float:right;">
+                <input id="streakhs" name="streak" type="hidden" value="0">
+                <input id="streaktotal" name="streaktotal" type="hidden" value="0">
+                <h2 id="streak" style="margin:0px 0px;">0</h2>
+                <h2 style="float: right; margin:0px 0px;"><img src="/images/flame.png" alt="streak flame"></h2>
+                <input id="higheststreak" name="higheststreak" type="hidden" value="0"> <!--for this game-->
+                <input id="dbhigheststreak" name="dbhigheststreak" type="hidden" value="0"> <!--for all plays across all players-->
+            </div>
+        </div>
     </form>
 
-    <table id="probtable" style="display:block">
+    <table id="probtable" style="display:block;margin-top:10px;margin-bottom:0px;">
         <tr>
             <% if(category === "two"){ %>
                 <td><h2 id="part1" class="prob">123</h2></td>
@@ -48,9 +59,7 @@
         </tr>
     </table>
     
-    <main>
-        <% include /Users/jenny/dynamic-quickmath/views/partials/numpad %>
-    </main>
+    <% include /Users/jenny/dynamic-quickmath/views/partials/numpad %>
     <% if(category === "two"){ %>
         <script>
             var result=0;
@@ -139,16 +148,20 @@
                 var answers = document.getElementById("answer").textContent;
                 
                 if(answers.substring(2) == result){
+                    //document.getElementById("currentbest").style.visibility="hidden";
                     streaknum++;
                     totalsolved++;
                     if(streaknum>highscore){
                         highscore = streaknum;
                     }
                 }else{
+                    //document.getElementById("currentbest").style.visibility="visible";
+                    
                     streaknum=0;
                 }
-                document.getElementById("hstreak").textContent = highscore;
+                //document.getElementById("totalnum").textContent = totalsolved;
                 document.getElementById("higheststreak").value = highscore;
+                document.getElementById("hstreak").textContent = highscore;
                 document.getElementById("streaktotal").value = totalsolved;
                 document.getElementById("streakhs").value = streaknum;
                 document.getElementById("streak").textContent = streaknum;
@@ -310,21 +323,31 @@
                 }    
             }
             var totalsolved = 0;
+            var highscore = 0;
             function compare(){
                 var answers = document.getElementById("answer").textContent;
                 
                 if(answers.substring(2) == result){
-                    streaknum++;         
-                    totalsolved++;       
+                    //document.getElementById("currentbest").style.visibility="hidden";
+                    streaknum++;
+                    totalsolved++;
+                    if(streaknum>highscore){
+                        highscore = streaknum;
+                    }
                 }else{
+                    //document.getElementById("currentbest").style.visibility="visible";
                     streaknum=0;
                 }
+                //document.getElementById("totalnum").textContent = totalsolved;
+                document.getElementById("hstreak").textContent = highscore;
+                document.getElementById("higheststreak").value = highscore;
                 document.getElementById("streaktotal").value = totalsolved;
                 document.getElementById("streakhs").value = streaknum;
-                document.getElementById("streak").textContent = streaknum;
                 document.getElementById("answer").textContent = "= ";
+                document.getElementById("streak").textContent = streaknum;
+
                 randomNum();
-            } 
+            }
             randomNum();        
         </script>
     <% } %>
