@@ -158,7 +158,28 @@ app.post('/two', function (req, res) {
                 return console.log(err.message);
             }else{
                 console.log(`A row has been inserted with rowid ${this.lastID}`);
-                res.render('problem', {category: "two", sign: "+", language:lang, hs:"hs2as", username:username, session:session});
+                //res.render('problem', {category: "two", sign: "+", language:lang, hs:"hs2as", username:username, session:session});
+            }
+        });
+        db.all(`SELECT * FROM dailylog WHERE date = CURRENT_DATE`,[],function(err, rows){
+            if(rows.length===0){
+                db.run(`INSERT INTO dailylog(customID, username, date, timestart) VALUES (?, ?, CURRENT_DATE, CURRENT_TIME)`, [session, username], function(err) {
+                    if (err) {
+                        return console.log(err.message);
+                    }else{
+                        console.log(`A row has been inserted with rowid ${this.lastID}`);
+                        res.render('problem', {category: "two", sign: "+", language:lang, hs:"hs2as", username:username, session:session});
+                    }
+                });
+            }else{
+                db.run(`UPDATE dailylog SET timestart = CURRENT_TIME WHERE date = CURRENT_DATE`, [], function(err) {
+                    if (err) {
+                        return console.log(err.message);
+                    }else{
+                        console.log(`A row has been inserted with rowid ${this.lastID}`);
+                        res.render('problem', {category: "two", sign: "+", language:lang, hs:"hs2as", username:username, session:session});
+                    }
+                });
             }
         });
     }
@@ -191,7 +212,27 @@ app.post('/three', function (req, res) {
                 return console.log(err.message);
             }else{
                 console.log(`A row has been inserted with rowid ${this.lastID}`);
-                res.render('problem', {category: "three", sign: "+", language:lang, hs: "hs3as", username:username, session:session});
+            }
+        });
+        db.all(`SELECT * FROM dailylog WHERE date = CURRENT_DATE`,[],function(err, rows){
+            if(rows.length===0){
+                db.run(`INSERT INTO dailylog(customID, username, date, timestart) VALUES (?, ?, CURRENT_DATE, CURRENT_TIME)`, [session, username], function(err) {
+                    if (err) {
+                        return console.log(err.message);
+                    }else{
+                        console.log(`A row has been inserted with rowid ${this.lastID}`);
+                        res.render('problem', {category: "three", sign: "+", language:lang, hs: "hs3as", username:username, session:session});
+                    }
+                });
+            }else{
+                db.run(`UPDATE dailylog SET timestart = CURRENT_TIME WHERE date = CURRENT_DATE`, [], function(err) {
+                    if (err) {
+                        return console.log(err.message);
+                    }else{
+                        console.log(`A row has been inserted with rowid ${this.lastID}`);
+                        res.render('problem', {category: "three", sign: "+", language:lang, hs: "hs3as", username:username, session:session});
+                    }
+                });
             }
         });
     }
@@ -224,7 +265,27 @@ app.post('/twomd', function (req, res) {
                 return console.log(err.message);
             }else{
                 console.log(`A row has been inserted with rowid ${this.lastID}`);
-                res.render('problem', {category: "two", sign: "x", language:lang, hs:"hs2md", username:username, session:session});
+            }
+        });
+        db.all(`SELECT * FROM dailylog WHERE date = CURRENT_DATE`,[],function(err, rows){
+            if(rows.length===0){
+                db.run(`INSERT INTO dailylog(customID, username, date, timestart) VALUES (?, ?, CURRENT_DATE, CURRENT_TIME)`, [session, username], function(err) {
+                    if (err) {
+                        return console.log(err.message);
+                    }else{
+                        console.log(`A row has been inserted with rowid ${this.lastID}`);
+                        res.render('problem', {category: "two", sign: "x", language:lang, hs:"hs2md", username:username, session:session});
+                    }
+                });
+            }else{
+                db.run(`UPDATE dailylog SET timestart = CURRENT_TIME WHERE date = CURRENT_DATE`, [], function(err) {
+                    if (err) {
+                        return console.log(err.message);
+                    }else{
+                        console.log(`A row has been inserted with rowid ${this.lastID}`);
+                        res.render('problem', {category: "two", sign: "x", language:lang, hs:"hs2md", username:username, session:session});
+                    }
+                });
             }
         });
     }
@@ -257,7 +318,27 @@ app.post('/threemd', function (req, res) {
                 return console.log(err.message);
             }else{
                 console.log(`A row has been inserted with rowid ${this.lastID}`);
-                res.render('problem', {category: "three", sign: "x", language:lang, hs:"hs3md", username:username, session:session});
+            }
+        });
+        db.all(`SELECT * FROM dailylog WHERE date = CURRENT_DATE`,[],function(err, rows){
+            if(rows.length===0){
+                db.run(`INSERT INTO dailylog(customID, username, date, timestart) VALUES (?, ?, CURRENT_DATE, CURRENT_TIME)`, [session, username], function(err) {
+                    if (err) {
+                        return console.log(err.message);
+                    }else{
+                        console.log(`A row has been inserted with rowid ${this.lastID}`);
+                        res.render('problem', {category: "three", sign: "x", language:lang, hs:"hs3md", username:username, session:session});
+                    }
+                });
+            }else{
+                db.run(`UPDATE dailylog SET timestart = CURRENT_TIME WHERE date = CURRENT_DATE`, [], function(err) {
+                    if (err) {
+                        return console.log(err.message);
+                    }else{
+                        console.log(`A row has been inserted with rowid ${this.lastID}`);
+                        res.render('problem', {category: "three", sign: "x", language:lang, hs:"hs3md", username:username, session:session});
+                    }
+                });
             }
         });
     }
@@ -290,7 +371,27 @@ app.post('/tworem', function (req, res) {
                 return console.log(err.message);
             }else{
                 console.log(`A row has been inserted with rowid ${this.lastID}`);
-                res.render('problem', {category: "two", sign: "", language:lang, hs:"hs2rm", username:username, session:session});
+            }
+        });
+        db.all(`SELECT * FROM dailylog WHERE date = CURRENT_DATE`,[],function(err, rows){
+            if(rows.length===0){
+                db.run(`INSERT INTO dailylog(customID, username, date, timestart) VALUES (?, ?, CURRENT_DATE, CURRENT_TIME)`, [session, username], function(err) {
+                    if (err) {
+                        return console.log(err.message);
+                    }else{
+                        console.log(`A row has been inserted with rowid ${this.lastID}`);
+                        res.render('problem', {category: "two", sign: "", language:lang, hs:"hs2rm", username:username, session:session});
+                    }
+                });
+            }else{
+                db.run(`UPDATE dailylog SET timestart = CURRENT_TIME WHERE date = CURRENT_DATE`, [], function(err) {
+                    if (err) {
+                        return console.log(err.message);
+                    }else{
+                        console.log(`A row has been inserted with rowid ${this.lastID}`);
+                        res.render('problem', {category: "two", sign: "", language:lang, hs:"hs2rm", username:username, session:session});
+                    }
+                });
             }
         });
     }
@@ -323,9 +424,30 @@ app.post('/threerem', function (req, res) {
                 return console.log(err.message);
             }else{
                 console.log(`A row has been inserted with rowid ${this.lastID}`);
-                res.render('problem', {category: "three", sign: "", language:lang, hs:"hs3rm", username:username, session:session});
             }
         });
+        db.all(`SELECT * FROM dailylog WHERE date = CURRENT_DATE`,[],function(err, rows){
+            if(rows.length===0){
+                db.run(`INSERT INTO dailylog(customID, username, date, timestart) VALUES (?, ?, CURRENT_DATE, CURRENT_TIME)`, [session, username], function(err) {
+                    if (err) {
+                        return console.log(err.message);
+                    }else{
+                        console.log(`A row has been inserted with rowid ${this.lastID}`);
+                        res.render('problem', {category: "three", sign: "", language:lang, hs:"hs3rm", username:username, session:session});
+                    }
+                });
+            }else{
+                db.run(`UPDATE dailylog SET timestart = CURRENT_TIME WHERE date = CURRENT_DATE`, [], function(err) {
+                    if (err) {
+                        return console.log(err.message);
+                    }else{
+                        console.log(`A row has been inserted with rowid ${this.lastID}`);
+                        res.render('problem', {category: "three", sign: "", language:lang, hs:"hs3rm", username:username, session:session});
+                    }
+                });
+            }
+        });
+        
     }
     if(req.body.title === "Leaderboard"){
         var usernames = [];
@@ -389,8 +511,46 @@ app.post('/back', function (req, res) {
                             //res.render('problem', {category: "two", sign: "+", language:lang, hs:"hs2as", username:username});
                         }
                     });
+                    db.run(`UPDATE dailylog SET `+ req.body.hs +` = `+ req.body.hs +`+ ?, timeend = CURRENT_TIME WHERE date = CURRENT_DATE`, [req.body.streaktotal], function(err) {
+                        if (err) {
+                            return console.log(err.message);
+                        }else{
+                            console.log(`A row has been inserted with rowid ${this.lastID}`);
+                            db.all(`SELECT * FROM dailylog WHERE date = CURRENT_DATE`, [], function(err, rows) {
+                                if (err) {
+                                    return console.log(err.message);
+                                }else{
+                                    rows.forEach((row)=>{
+                                        var d2 = new Date(row.date+" "+row.timeend);
+                                        var d1 = new Date(row.date+" "+row.timestart);
+                                        var seconds = (d2-d1)/1000;
+                                        console.log(seconds);
+                                        db.run(`UPDATE dailylog SET totaltime = totaltime + ? WHERE date = CURRENT_DATE`, [seconds], function(err) {
+                                            if (err) {
+                                                return console.log(err.message);
+                                            }else{
+                                                console.log(`A row has been inserted with rowid ${this.lastID}`);
+                                                //res.render('problem', {category: "two", sign: "+", language:lang, hs:"hs2as", username:username});
+                                            }
+                                        });
+                                    }); 
+                                    
+                                    console.log(`A row has been inserted with rowid ${this.lastID}`);
+                                    //res.render('problem', {category: "two", sign: "+", language:lang, hs:"hs2as", username:username});
+                                }
+                            });
+                        }
+                    });
                 }else{
                     db.run(`DELETE FROM problog WHERE customID = ?`, [req.body.session], function(err) {
+                        if (err) {
+                            return console.log(err.message);
+                        }else{
+                            console.log(`A row has been deleted.`);
+                            //res.render('problem', {category: "two", sign: "+", language:lang, hs:"hs2as", username:username});
+                        }
+                    });
+                    db.run(`DELETE FROM dailylog WHERE customID = ?`, [req.body.session], function(err) {
                         if (err) {
                             return console.log(err.message);
                         }else{
@@ -477,24 +637,58 @@ app.post('/full', function(req, res){
 });
 
 app.post('/daily', function(req, res){//WHERE timestamp >= CURDATE()
-    db.all(`SELECT * FROM problog WHERE timestart >= CURDATE()`, [], (err, rows) =>{
+    db.all(`SELECT * FROM dailylog WHERE username = ?`, [req.body.username], (err, rows) =>{// WHERE timestart >= CURDATE()
         if(err){
           return console.error(err.message);
         }else{
-            var totaltime = 0;
-            var totalsolved = 0;
+            var totaltime = [];
+            var totalsolved = [];
+            var hs2as = [];
+            var hs3as = [];
+            var hs2md = [];
+            var hs3md = [];
+            var hs2rm = [];
+            var hs3rm = [];
+            var dates = [];
             rows.forEach((row)=>{
-                categories.push(row.category);
-                totalsolved+=row.numsolved;
-                var d2 = new Date(row.timeend);
+                dates.push(row.date);
+                totaltime.push(row.totaltime); 
+                hs2as.push(row.hs2as);               
+                hs3as.push(row.hs3as);               
+                hs2md.push(row.hs2md);               
+                hs3md.push(row.hs3md);               
+                hs2rm.push(row.hs2rm);               
+                hs3rm.push(row.hs3rm);
+                totalsolved.push(row.hs2as+row.hs3as+row.hs2md+row.hs3md+row.hs2rm+row.hs3rm);
+
+                /*if(row.category==="hs2as"){
+                    numsolveds[0]+=row.numsolved;
+                }
+                if(row.category==="hs3as"){
+                    numsolveds[1]+=row.numsolved;
+                }
+                if(row.category==="hs2md"){
+                    numsolveds[2]+=row.numsolved;
+                }
+                if(row.category==="hs3md"){
+                    numsolveds[3]+=row.numsolved;
+                }
+                if(row.category==="hs2rm"){
+                    numsolveds[4]+=row.numsolved;
+                }
+                if(row.category==="hs3rm"){
+                    numsolveds[5]+=row.numsolved;
+                }*/
+                //timestarts.push(row.timestart);
+                //totalsolved[dates.length-1]=totalsolved[dates.length-1]+row.numsolved;
+                /*var d2 = new Date(row.timeend);
                 var d1 = new Date(row.timestart);
                 var seconds = (d2-d1)/1000;
-                totaltime+=seconds;
+                totaltime+=seconds;*/
             }); 
-            res.render('log',{username: req.body.username, language:lang, selection:false, datauser: null, datatstart: timestarts, category: categories, num: numsolveds, datatspent: timespent, logtype: "Full"});
+            res.render('log',{username: req.body.username, language:lang, selection:false, totalsolved: totalsolved, dates: dates, totaltime: totaltime, hs2as:hs2as, hs3as:hs3as, hs2md:hs2md, hs3md:hs3md, hs2rm:hs2rm, hs3rm:hs3rm, logtype: "Daily"});
         }
     });
-    res.render('log',{username: req.body.username, language:lang, selection:false, datauser: usernames, datatstart: timestarts, category: categories, num: numsolveds, datatspent: totaltime, logtype: "Daily"});
 });
 
 app.listen(3000, function () {

@@ -167,31 +167,14 @@
             </div>
         </div>
     </div>-->
+    
     <!--<div style="float:left;height:54px;">
         <div style="display:block;font-size:30px;margin-top:5px;">time</div>
     </div>
     <div id="right" style="text-align:right;margin-top:10px;">
         <h4><img src="/images/flame.png" alt="streak flame"></h4>
         <h4><div style="font-size:24px">0</div></h4></div>
-    <div style="display:block;text-align:center;margin-top:10px;font-size:24px;float:center;">'+arrtspent[i]+'</div>-->
-    <script>
-        if(datauser===""){
-            console.log("nolog");
-            document.getElementById("nolog").setAttribute("type","submit");
-            document.getElementById("nolog").className="ghost-button";
-        }else{
-            var datauser =  "<%- datauser %>";
-            var arrusers = datauser.split(",");
-            var datatstart = "<%- datatstart %>";
-            var arrtstart = datatstart.split(",");
-            var category = "<%- category %>";
-            var arrcategory = category.split(",");
-            var datanum = "<%- num %>";
-            var arrnum = datanum.split(",");
-            var datatspent = "<%- datatspent %>";
-            var arrtspent = datatspent.split(",");
-        }
-    </script>
+    <div style="display:block;text-align:center;margin-top:10px;font-size:28px;float:center;">'+arrtspent[i]+'</div>-->
 
     <% if(logtype === "Full"){ %>
         <script> 
@@ -211,6 +194,12 @@
             if(datauser===""){
                 console.log("nolog");
                 document.getElementById("nolog").setAttribute("type","submit");
+                if(languages === "en"){
+                document.getElementById("nolog").value = "You don't have any entries yet!";
+                }
+                if(languages === "zh"){
+                    document.getElementById("nolog").value = "你暂时还没有记录！";
+                }
                 document.getElementById("nolog").className="ghost-button";
             }else{
                 var thisdate = "";
@@ -224,9 +213,17 @@
                         var bigdiv = document.createElement("h3");
                         bigdiv.style.display="block";
                         bigdiv.style.width="320px";
-                        bigdiv.innerHTML='<div style="display:block;height:16px;"><div style="float:left;width:85px;"><h4 style="text-align:center;">Time</h4></div>'+
-                        '<div style="float:left;width:150px;"><h4 style="text-align:center;">Game Length</h4></div>'+
-                        '<div style="float:left;width:85px;"><h4 style="text-align:center;">Streak</h4></div></div>';
+                        if(languages === "en"){
+                            bigdiv.innerHTML='<div style="display:block;height:16px;"><div style="float:left;width:85px;"><h4 style="text-align:center;">Time</h4></div>'+
+                            '<div style="float:left;width:150px;"><h4 style="text-align:center;">Game Length</h4></div>'+
+                            '<div style="float:left;width:85px;"><h4 style="text-align:center;">Streak</h4></div></div>';
+                        }
+                        if(languages === "zh"){
+                            bigdiv.innerHTML='<div style="display:block;height:16px;"><div style="float:left;width:85px;"><h4 style="text-align:center;">开始时间</h4></div>'+
+                            '<div style="float:left;width:150px;"><h4 style="text-align:center;">做题时间</h4></div>'+
+                            '<div style="float:left;width:85px;"><h4 style="text-align:center;">高分</h4></div></div>';
+                        }
+                        
                         container.appendChild(bigdiv);
                     }
                     thisdate = date;
@@ -243,11 +240,19 @@
                     }*/
                     var minutes = Math.floor(arrtspent[i]/60);
                     var seconds = arrtspent[i]%60;
-                    if(languages)
-                    if(minutes>0){
-                        arrtspent[i] = minutes+"m "+seconds+"s";
-                    }else{
-                        arrtspent[i] = seconds+"s";
+                    if(languages==="en"){
+                        if(minutes>0){
+                            arrtspent[i] = minutes+"m "+seconds+"s";
+                        }else{
+                            arrtspent[i] = seconds+"s";
+                        }
+                    }
+                    if(languages==="zh"){
+                        if(minutes>0){
+                            arrtspent[i] = minutes+"分 "+seconds+"秒";
+                        }else{
+                            arrtspent[i] = seconds+"秒";
+                        }
                     }
                     
                     var input = document.createElement("div");
@@ -260,6 +265,112 @@
                             '<div id="right" style="text-align:right;margin-top:10px;"><h4><img src="/images/flame.png" alt="streak flame"></h4><h4>'+arrnum[i]+'</h4></div>'+
                                 '<div style="display:block;text-align:center;margin-top:6px;font-size:28px;float:center;">'+arrtspent[i]+'</div>';
                     container.appendChild(input);
+                }
+            }
+        </script>
+    <% } %>
+
+    <% if(logtype === "Daily"){ %>
+        <script>
+            var data2as = "<%- hs2as %>";
+            var arrhs2as = [];
+            if(data2as!==""){
+                arrhs2as = data2as.split(",");
+            }
+            var data3as = "<%- hs3as %>";
+            var arrhs3as = [];
+            if(data3as!==""){
+                arrhs3as = data3as.split(",");
+            }
+            var data2md = "<%- hs2md %>";
+            var arrhs2md = [];
+            if(data2md!==""){
+                arrhs2md = data2md.split(",");
+            }
+            var data3md = "<%- hs3md %>";
+            var arrhs3md = [];
+            if(data3md!==""){
+                arrhs3md = data3md.split(",");
+            }
+            var data2rm = "<%- hs2rm %>";
+            var arrhs2rm = [];
+            if(data2rm!==""){
+                arrhs2rm = data2rm.split(",");
+            }
+            var data3rm = "<%- hs3rm %>";
+            var arrhs3rm = [];
+            if(data3rm!==""){
+                arrhs3rm = data3rm.split(",");
+            }
+            var datadates =  "<%- dates %>";
+            var arrdates = datadates.split(",")
+            var datatsolved = "<%- totalsolved %>";
+            var arrtsolved = datatsolved.split(",");
+            var datatime = "<%- totaltime %>";
+            var arrtime = datatime.split(",");
+            if(datadates===""){
+                console.log("nolog");
+                document.getElementById("nolog").setAttribute("type","submit");
+                if(languages === "en"){
+                    document.getElementById("nolog").value = "You don't have any entries yet!";
+                }
+                if(languages === "zh"){
+                    document.getElementById("nolog").value = "你暂时还没有记录！";
+                }
+                document.getElementById("nolog").className="ghost-button";
+            }else{
+                //var thisdate = "";
+                //alert(arrdates.length);
+
+                for(i=0;i<arrdates.length;i++){
+                    var totaltime="";
+                    var minutes = Math.floor(arrtime[i]/60);
+                    var seconds = arrtime[i] % 60;
+                    if(minutes>=60){
+                        var hours = Math.floor(minutes/60);
+                        minutes = minutes%60;
+                        if(languages==="en")
+                            totaltime = hours+"h "+minutes+"m";
+                        if(languages==="zh")
+                            totaltime = hours+"小时 "+minutes+"分";
+                    }
+                    if(minutes>0){
+                        if(languages==="en")
+                            totaltime = minutes+"m "+seconds+"s";
+                        if(languages==="zh")
+                            totaltime = minutes+"分"+seconds+"秒";
+                    }else{
+                        if(languages==="en")
+                            totaltime = seconds+"s";
+                        if(languages==="zh")
+                            totaltime = seconds+"秒";
+                    }
+                    /*var newday = document.createElement("h2");
+                    newday.textContent = date;
+                    container.appendChild(newday);*/
+                    var input = document.createElement("div");
+                    input.name = "rank "+ (i+1);
+                    input.style.width = "297px";
+                    input.style.padding="10px 10px";
+                    input.style.height = "45px";
+                    input.className = "ghost-button";//'<div style = "width:300px;height:65px;background-color:transparent;border:2px solid #ddd;padding:10px 10px;-webkit-transition: all 0.1s ease-in-out;-moz-transition: all 0.1s ease-in-out;-ms-transition: all 0.1s ease-in-out;-o-transition: all 0.1s ease-in-out;transition: all 0.1s ease-in-out;">'
+                            input.innerHTML = '<div style="float:left;height:54px;"><div style="display:block;font-size:24px;margin-top:5px;">'+arrdates[i]+'</div>'+'</div>'+
+                            '<div id="right" style="text-align:right;margin-top:5px;"><h4><img src="/images/flame.png" alt="streak flame"></h4><h4>'+arrtsolved[i]+'</h4></div>'+
+                                '<div style="display:block;text-align:center;margin-top:6px;font-size:24px;float:center;">'+totaltime+'</div>';
+                        
+                    container.appendChild(input);
+                    /*var categorytype = 0;
+                    if(arrcategory[i].substring(3)==="as"){
+                        categorytype = "Add/Subtract";
+                    }
+                    if(arrcategory[i].substring(3)==="md"){
+                        categorytype = "Multiply/Divide";
+                    }
+                    if(arrcategory[i].substring(3)==="rm"){
+                        categorytype = "Remainder";
+                    }*/
+                    
+                    
                 }
             }
         </script>
