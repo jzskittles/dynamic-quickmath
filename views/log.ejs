@@ -240,17 +240,26 @@
                     }*/
                     var minutes = Math.floor(arrtspent[i]/60);
                     var seconds = arrtspent[i]%60;
-                    if(languages==="en"){
-                        if(minutes>0){
+                    if(minutes>=60){
+                        var hours = Math.floor(minutes/60);
+                        minutes = minutes%60;
+                        if(languages==="en")
+                            totaltime = hours+"h "+minutes+"m";
+                        if(languages==="zh")
+                            totaltime = hours+"小时 "+minutes+"分";
+                    }
+                    if(minutes>0){
+                        if(languages==="en"){
                             arrtspent[i] = minutes+"m "+seconds+"s";
-                        }else{
+                        }
+                        if(languages==="zh"){
+                            arrtspent[i] = minutes+"分 "+seconds+"秒";
+                        }
+                    }else{
+                        if(languages==="en"){
                             arrtspent[i] = seconds+"s";
                         }
-                    }
-                    if(languages==="zh"){
-                        if(minutes>0){
-                            arrtspent[i] = minutes+"分 "+seconds+"秒";
-                        }else{
+                        if(languages==="zh"){
                             arrtspent[i] = seconds+"秒";
                         }
                     }
@@ -263,7 +272,7 @@
                     input.className = "ghost-button";//'<div style = "width:300px;height:65px;background-color:transparent;border:2px solid #ddd;padding:10px 10px;-webkit-transition: all 0.1s ease-in-out;-moz-transition: all 0.1s ease-in-out;-ms-transition: all 0.1s ease-in-out;-o-transition: all 0.1s ease-in-out;transition: all 0.1s ease-in-out;">'
                     input.innerHTML = '<div style="float:left;height:54px;"><div style="display:block;font-size:30px;margin-top:5px;">'+time.substring(0,5)+'</div>'+'</div>'+
                             '<div id="right" style="text-align:right;margin-top:10px;"><h4><img src="/images/flame.png" alt="streak flame"></h4><h4>'+arrnum[i]+'</h4></div>'+
-                                '<div style="display:block;text-align:center;margin-top:6px;font-size:28px;float:center;">'+arrtspent[i]+'</div>';
+                                '<div style="display:block;text-align:center;margin-top:10px;font-size:24px;float:center;">'+arrtspent[i]+'</div>';
                     container.appendChild(input);
                 }
             }
@@ -321,6 +330,19 @@
             }else{
                 //var thisdate = "";
                 //alert(arrdates.length);
+                var bigdiv = document.createElement("h3");
+                bigdiv.style.display="block";
+                bigdiv.style.width="320px";
+                if(languages === "en"){
+                    bigdiv.innerHTML='<div style="display:block;height:16px;"><div style="float:left;width:85px;"><h4 style="text-align:center;">Date</h4></div>'+
+                    '<div style="float:left;width:150px;"><h4 style="text-align:center;">Total Time</h4></div>'+
+                    '<div style="float:left;width:85px;"><h4 style="text-align:center;">Results</h4></div></div>';
+                }
+                if(languages === "zh"){
+                    bigdiv.innerHTML='<div style="display:block;height:16px;"><div style="float:left;width:85px;"><h4 style="text-align:center;">日子</h4></div>'+
+                    '<div style="float:left;width:150px;"><h4 style="text-align:center;">做题时间</h4></div>'+
+                    '<div style="float:left;width:85px;"><h4 style="text-align:center;">对错</h4></div></div>';
+                }
 
                 for(i=0;i<arrdates.length;i++){
                     var totaltime="";

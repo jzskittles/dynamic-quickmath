@@ -104,6 +104,59 @@ app.post('/language', function (req, res) {
             res.render('home', {language:lang, username:req.body.username, selection:false});
         }
     }
+    if(req.body.logtype === "Full"){
+        var usernames = [];
+        var timestarts = [];
+        var categories = [];
+        var numsolveds = [];
+        var timespent = [];
+        db.all(`SELECT * FROM problog WHERE username = ? ORDER BY timestart DESC`, [req.body.username], (err, rows) =>{
+            if(err){
+            return console.error(err.message);
+            }else{
+                rows.forEach((row)=>{
+                    usernames.push(row.username);
+                    timestarts.push(row.timestart);
+                    categories.push(row.category);
+                    numsolveds.push(row.numsolved);
+                    var d2 = new Date(row.timeend);
+                    var d1 = new Date(row.timestart);
+                    var seconds = (d2-d1)/1000;
+                    timespent.push(seconds);
+                }); 
+                res.render('log',{username: req.body.username, language:lang, selection:false, datauser: usernames, datatstart: timestarts, category: categories, num: numsolveds, datatspent: timespent, logtype: "Full"});
+            }
+        });
+    }
+    if(req.body.logtype === "Daily"){
+        db.all(`SELECT * FROM dailylog WHERE username = ? ORDER BY date DESC`, [req.body.username], (err, rows) =>{// WHERE timestart >= CURDATE()
+            if(err){
+              return console.error(err.message);
+            }else{
+                var totaltime = [];
+                var totalsolved = [];
+                var hs2as = [];
+                var hs3as = [];
+                var hs2md = [];
+                var hs3md = [];
+                var hs2rm = [];
+                var hs3rm = [];
+                var dates = [];
+                rows.forEach((row)=>{
+                    dates.push(row.date);
+                    totaltime.push(row.totaltime); 
+                    hs2as.push(row.hs2as);               
+                    hs3as.push(row.hs3as);               
+                    hs2md.push(row.hs2md);               
+                    hs3md.push(row.hs3md);               
+                    hs2rm.push(row.hs2rm);               
+                    hs3rm.push(row.hs3rm);
+                    totalsolved.push(row.hs2as+row.hs3as+row.hs2md+row.hs3md+row.hs2rm+row.hs3rm);
+                }); 
+                res.render('log',{username: req.body.username, language:lang, selection:false, totalsolved: totalsolved, dates: dates, totaltime: totaltime, hs2as:hs2as, hs3as:hs3as, hs2md:hs2md, hs3md:hs3md, hs2rm:hs2rm, hs3rm:hs3rm, logtype: "Daily"});
+            }
+        });
+    }
     if(req.body.title === "Leaderboard"){
         if(req.body.selection === "selection"){
             res.render('leaderboard',{username: req.body.username, language:lang, selection: true, datauser: null, datahs: null, category: null, error: null});
@@ -617,7 +670,7 @@ app.post('/full', function(req, res){
     var categories = [];
     var numsolveds = [];
     var timespent = [];
-    db.all(`SELECT * FROM problog WHERE username = ?`, [req.body.username], (err, rows) =>{
+    db.all(`SELECT * FROM problog WHERE username = ? ORDER BY timestart DESC`, [req.body.username], (err, rows) =>{
         if(err){
           return console.error(err.message);
         }else{
@@ -637,7 +690,7 @@ app.post('/full', function(req, res){
 });
 
 app.post('/daily', function(req, res){//WHERE timestamp >= CURDATE()
-    db.all(`SELECT * FROM dailylog WHERE username = ?`, [req.body.username], (err, rows) =>{// WHERE timestart >= CURDATE()
+    db.all(`SELECT * FROM dailylog WHERE username = ? ORDER BY date DESC`, [req.body.username], (err, rows) =>{// WHERE timestart >= CURDATE()
         if(err){
           return console.error(err.message);
         }else{
