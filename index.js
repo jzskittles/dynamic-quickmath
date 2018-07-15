@@ -135,6 +135,7 @@ app.post('/language', function (req, res) {
             }else{
                 var totaltime = [];
                 var totalsolved = [];
+                var totalwrong = [];
                 var hs2as = [];
                 var hs3as = [];
                 var hs2md = [];
@@ -145,6 +146,7 @@ app.post('/language', function (req, res) {
                 rows.forEach((row)=>{
                     dates.push(row.date);
                     totaltime.push(row.totaltime); 
+                    totalwrong.push(row.totalwrong);
                     hs2as.push(row.hs2as);               
                     hs3as.push(row.hs3as);               
                     hs2md.push(row.hs2md);               
@@ -153,7 +155,7 @@ app.post('/language', function (req, res) {
                     hs3rm.push(row.hs3rm);
                     totalsolved.push(row.hs2as+row.hs3as+row.hs2md+row.hs3md+row.hs2rm+row.hs3rm);
                 }); 
-                res.render('log',{username: req.body.username, language:lang, selection:false, totalsolved: totalsolved, dates: dates, totaltime: totaltime, hs2as:hs2as, hs3as:hs3as, hs2md:hs2md, hs3md:hs3md, hs2rm:hs2rm, hs3rm:hs3rm, logtype: "Daily"});
+                res.render('log',{username: req.body.username, language:lang, selection:false, totalsolved: totalsolved, dates: dates, totaltime: totaltime, totalwrong:totalwrong, hs2as:hs2as, hs3as:hs3as, hs2md:hs2md, hs3md:hs3md, hs2rm:hs2rm, hs3rm:hs3rm, logtype: "Daily"});
             }
         });
     }
@@ -214,6 +216,14 @@ app.post('/two', function (req, res) {
                 //res.render('problem', {category: "two", sign: "+", language:lang, hs:"hs2as", username:username, session:session});
             }
         });
+        db.run(`INSERT INTO probsmissed(customID, username, category, timestamp) VALUES (?, ?, "hs2as", CURRENT_TIMESTAMP)`, [session, username], function(err) {
+            if (err) {
+                return console.log(err.message);
+            }else{
+                console.log(`A row has been inserted with rowid ${this.lastID}`);
+                //res.render('problem', {category: "two", sign: "+", language:lang, hs:"hs2as", username:username, session:session});
+            }
+        });
         db.all(`SELECT * FROM dailylog WHERE date = CURRENT_DATE`,[],function(err, rows){
             if(rows.length===0){
                 db.run(`INSERT INTO dailylog(customID, username, date, timestart) VALUES (?, ?, CURRENT_DATE, CURRENT_TIME)`, [session, username], function(err) {
@@ -259,8 +269,15 @@ app.post('/three', function (req, res) {
         var date = new Date();
         var current_time = date.getTime();
         console.log(current_time);
-        var session = username +""+ current_time + "hs2as";
-        db.run(`INSERT INTO problog(customID, username, timestart, category) VALUES (?, ?, CURRENT_TIMESTAMP, "hs2as")`, [session, username], function(err) {
+        var session = username +""+ current_time + "hs3as";
+        db.run(`INSERT INTO problog(customID, username, timestart, category) VALUES (?, ?, CURRENT_TIMESTAMP, "hs3as")`, [session, username], function(err) {
+            if (err) {
+                return console.log(err.message);
+            }else{
+                console.log(`A row has been inserted with rowid ${this.lastID}`);
+            }
+        });
+        db.run(`INSERT INTO probsmissed(customID, username, category, timestamp) VALUES (?, ?, "hs3as", CURRENT_TIMESTAMP)`, [session, username], function(err) {
             if (err) {
                 return console.log(err.message);
             }else{
@@ -312,8 +329,15 @@ app.post('/twomd', function (req, res) {
         var date = new Date();
         var current_time = date.getTime();
         console.log(current_time);
-        var session = username +""+ current_time + "hs2as";
-        db.run(`INSERT INTO problog(customID, username, timestart, category) VALUES (?, ?, CURRENT_TIMESTAMP, "hs2as")`, [session, username], function(err) {
+        var session = username +""+ current_time + "hs2md";
+        db.run(`INSERT INTO problog(customID, username, timestart, category) VALUES (?, ?, CURRENT_TIMESTAMP, "hs2md")`, [session, username], function(err) {
+            if (err) {
+                return console.log(err.message);
+            }else{
+                console.log(`A row has been inserted with rowid ${this.lastID}`);
+            }
+        });
+        db.run(`INSERT INTO probsmissed(customID, username, category, timestamp) VALUES (?, ?, "hs2md", CURRENT_TIMESTAMP)`, [session, username], function(err) {
             if (err) {
                 return console.log(err.message);
             }else{
@@ -365,8 +389,15 @@ app.post('/threemd', function (req, res) {
         var date = new Date();
         var current_time = date.getTime();
         console.log(current_time);
-        var session = username +""+ current_time + "hs2as";
-        db.run(`INSERT INTO problog(customID, username, timestart, category) VALUES (?, ?, CURRENT_TIMESTAMP, "hs2as")`, [session, username], function(err) {
+        var session = username +""+ current_time + "hs3md";
+        db.run(`INSERT INTO problog(customID, username, category) VALUES (?, ?, "hs3md")`, [session, username], function(err) {
+            if (err) {
+                return console.log(err.message);
+            }else{
+                console.log(`A row has been inserted with rowid ${this.lastID}`);
+            }
+        });
+        db.run(`INSERT INTO problog(customID, username, category, timestamp) VALUES (?, ?, "hs3md", CURRENT_TIMESTAMP)`, [session, username], function(err) {
             if (err) {
                 return console.log(err.message);
             }else{
@@ -418,8 +449,15 @@ app.post('/tworem', function (req, res) {
         var date = new Date();
         var current_time = date.getTime();
         console.log(current_time);
-        var session = username +""+ current_time + "hs2as";
-        db.run(`INSERT INTO problog(customID, username, timestart, category) VALUES (?, ?, CURRENT_TIMESTAMP, "hs2as")`, [session, username], function(err) {
+        var session = username +""+ current_time + "hs2rm";
+        db.run(`INSERT INTO problog(customID, username, timestart, category) VALUES (?, ?, CURRENT_TIMESTAMP, "hs2rm")`, [session, username], function(err) {
+            if (err) {
+                return console.log(err.message);
+            }else{
+                console.log(`A row has been inserted with rowid ${this.lastID}`);
+            }
+        });
+        db.run(`INSERT INTO probsmissed(customID, username, category, timestamp) VALUES (?, ?, "hs2rm", CURRENT_TIMESTAMP)`, [session, username], function(err) {
             if (err) {
                 return console.log(err.message);
             }else{
@@ -471,8 +509,15 @@ app.post('/threerem', function (req, res) {
         var date = new Date();
         var current_time = date.getTime();
         console.log(current_time);
-        var session = username +""+ current_time + "hs2as";
-        db.run(`INSERT INTO problog(customID, username, timestart, category) VALUES (?, ?, CURRENT_TIMESTAMP, "hs2as")`, [session, username], function(err) {
+        var session = username +""+ current_time + "hs3rm";
+        db.run(`INSERT INTO problog(customID, username, timestart, category) VALUES (?, ?, CURRENT_TIMESTAMP, "hs3rm")`, [session, username], function(err) {
+            if (err) {
+                return console.log(err.message);
+            }else{
+                console.log(`A row has been inserted with rowid ${this.lastID}`);
+            }
+        });
+        db.run(`INSERT INTO probsmissed(customID, username, category, timestamp) VALUES (?, ?, "hs3rm", CURRENT_TIMESTAMP)`, [session, username], function(err) {
             if (err) {
                 return console.log(err.message);
             }else{
@@ -525,6 +570,7 @@ app.post('/back', function (req, res) {
             if (err) {
                 return console.log(err.message);
             }else{
+                console.log(req.body.part1miss);
                 var rowatr;
                 if(req.body.hs === "hs2as"){
                     rowatr = row.hs2as;
@@ -564,10 +610,33 @@ app.post('/back', function (req, res) {
                             //res.render('problem', {category: "two", sign: "+", language:lang, hs:"hs2as", username:username});
                         }
                     });
-                    db.run(`UPDATE dailylog SET `+ req.body.hs +` = `+ req.body.hs +`+ ?, timeend = CURRENT_TIME WHERE date = CURRENT_DATE`, [req.body.streaktotal], function(err) {
+                    var categorys = req.body.hs;
+                    if(categorys.substring(2,3)==="2"){
+                        db.run(`UPDATE probsmissed SET part1 = ?, sign = ?, part2 = ?, kidanswer = ?, correctanswer = ? WHERE customID = ?`, [req.body.part1miss, req.body.signmiss, req.body.part2miss, req.body.kidanswer, req.body.correctanswer, req.body.session], function(err) {
+                            if (err) {
+                                return console.log(err.message);
+                            }else{
+                                console.log(`A row has been inserted with rowid ${this.lastID}`);
+                                //res.render('problem', {category: "two", sign: "+", language:lang, hs:"hs2as", username:username});
+                            }
+                        });
+                    }
+                    if(categorys.substring(2,3)==="3"){
+                        db.run(`UPDATE probsmissed SET part1 = ?, sign = ?, part2 = ?, sign2 = ?, part3 = ?, kidanswer = ?, correctanswer = ? WHERE customID = ?`, [req.body.part1miss, req.body.signmiss, req.body.part2miss, req.body.sign2miss, req.body.part3miss, req.body.kidanswer, req.body.correctanswer, req.body.session], function(err) {
+                            if (err) {
+                                return console.log(err.message);
+                            }else{
+                                console.log(`A row has been inserted with rowid ${this.lastID}`);
+                                //res.render('problem', {category: "two", sign: "+", language:lang, hs:"hs2as", username:username});
+                            }
+                        });
+                    }
+                    
+                    db.run(`UPDATE dailylog SET `+ req.body.hs +` = `+ req.body.hs +`+ ?, timeend = CURRENT_TIME, totalwrong = totalwrong + ? WHERE date = CURRENT_DATE`, [req.body.streaktotal, req.body.numwrong], function(err) {
                         if (err) {
                             return console.log(err.message);
                         }else{
+                            console.log("numwrong"+req.body.numwrong);
                             console.log(`A row has been inserted with rowid ${this.lastID}`);
                             db.all(`SELECT * FROM dailylog WHERE date = CURRENT_DATE`, [], function(err, rows) {
                                 if (err) {
@@ -670,6 +739,7 @@ app.post('/full', function(req, res){
     var categories = [];
     var numsolveds = [];
     var timespent = [];
+    var customIDs = [];
     db.all(`SELECT * FROM problog WHERE username = ? ORDER BY timestart DESC`, [req.body.username], (err, rows) =>{
         if(err){
           return console.error(err.message);
@@ -683,8 +753,9 @@ app.post('/full', function(req, res){
                 var d1 = new Date(row.timestart);
                 var seconds = (d2-d1)/1000;
                 timespent.push(seconds);
+                customIDs.push(row.customID);
             }); 
-            res.render('log',{username: req.body.username, language:lang, selection:false, datauser: usernames, datatstart: timestarts, category: categories, num: numsolveds, datatspent: timespent, logtype: "Full"});
+            res.render('log',{username: req.body.username, language:lang, selection:false, datauser: usernames, datatstart: timestarts, category: categories, num: numsolveds, datatspent: timespent, customID:customIDs, logtype: "Full"});
         }
     });
 });
@@ -696,6 +767,7 @@ app.post('/daily', function(req, res){//WHERE timestamp >= CURDATE()
         }else{
             var totaltime = [];
             var totalsolved = [];
+            var totalwrong = [];
             var hs2as = [];
             var hs3as = [];
             var hs2md = [];
@@ -705,7 +777,8 @@ app.post('/daily', function(req, res){//WHERE timestamp >= CURDATE()
             var dates = [];
             rows.forEach((row)=>{
                 dates.push(row.date);
-                totaltime.push(row.totaltime); 
+                totaltime.push(row.totaltime);
+                totalwrong.push(row.totalwrong); 
                 hs2as.push(row.hs2as);               
                 hs3as.push(row.hs3as);               
                 hs2md.push(row.hs2md);               
@@ -739,7 +812,49 @@ app.post('/daily', function(req, res){//WHERE timestamp >= CURDATE()
                 var seconds = (d2-d1)/1000;
                 totaltime+=seconds;*/
             }); 
-            res.render('log',{username: req.body.username, language:lang, selection:false, totalsolved: totalsolved, dates: dates, totaltime: totaltime, hs2as:hs2as, hs3as:hs3as, hs2md:hs2md, hs3md:hs3md, hs2rm:hs2rm, hs3rm:hs3rm, logtype: "Daily"});
+            res.render('log',{username: req.body.username, language:lang, selection:false, totalsolved: totalsolved, totalwrong:totalwrong, dates: dates, totaltime: totaltime, hs2as:hs2as, hs3as:hs3as, hs2md:hs2md, hs3md:hs3md, hs2rm:hs2rm, hs3rm:hs3rm, logtype: "Daily"});
+        }
+    });
+});
+
+app.post('/getWrong/:id', function(req, res){
+    //var usernames = [];
+    var timestamp = "";
+    var part1missed = [];
+    var signmissed = [];
+    var part2missed = [];
+    var sign2missed = [];
+    var part3missed = [];
+    var kidanswers = [];
+    var correctanswers = [];
+    console.log( req.params.id);
+    db.all(`SELECT * FROM probsmissed WHERE customID = ?`, [req.params.id], (err, rows) =>{
+        if(err){
+          return console.error(err.message);
+        }else{
+            var categorys="";
+            rows.forEach((row)=>{
+                //usernames.push(row.username);
+                timestamp = row.timestamp;
+                part1missed.push(row.part1);
+                signmissed.push(row.sign);
+                part2missed.push(row.part2);
+                categorys = row.category;
+                if(categorys.substring(2,3)==="3"){
+                    sign2missed.push(row.sign2);
+                    part3missed.push(row.part3);
+                }
+                kidanswers.push(row.kidanswer);
+                correctanswers.push(row.correctanswer);
+            }); 
+            if(categorys.substring(2,3)==="2"){
+                console.log(part1missed.toString());
+                console.log(timestamp);
+                res.render('log',{username: req.body.username, language:lang, selection:false, category:categorys, timestamp:timestamp, part1miss:part1missed, signmiss:signmissed, part2miss:part2missed, sign2miss:null, part3miss:null, kidanswer: kidanswers, correctanswer: correctanswers, logtype: "Wrong"});
+            }
+            if(categorys.substring(2,3)==="3"){
+                res.render('log',{username: req.body.username, language:lang, selection:false, category:categorys, timestamp:timestamp, part1miss:part1missed, signmiss:signmissed, part2miss:part2missed, sign2miss:sign2missed, part3miss:part3missed, kidanswer: kidanswers, correctanswer: correctanswers, logtype: "Wrong"});
+            }
         }
     });
 });

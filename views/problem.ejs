@@ -38,6 +38,14 @@
                 <h2 style="float: right; margin:0px 0px;"><img src="/images/flame.png" alt="streak flame"></h2>
                 <input id="higheststreak" name="higheststreak" type="hidden" value="0"> <!--for this game-->
                 <input id="dbhigheststreak" name="dbhigheststreak" type="hidden" value="0"> <!--for all plays across all players-->
+                <input id="part1miss" name="part1miss" type="hidden" value="">
+                <input id="signmiss" name="signmiss" type="hidden" value="">
+                <input id="part2miss" name="part2miss" type="hidden" value="">
+                <input id="sign2miss" name="sign2miss" type="hidden" value="">
+                <input id="part3miss" name="part3miss" type="hidden" value="">
+                <input id="kidanswer" name="kidanswer" type="hidden" value="">
+                <input id="correctanswer" name="correctanswer" type="hidden" value="">
+                <input id="numwrong" name="numwrong" type="hidden" value="">
             </div>
         </div>
     </form>
@@ -62,6 +70,12 @@
     <% include /Users/jenny/dynamic-quickmath/views/partials/numpad %>
     <% if(category === "two"){ %>
         <script>
+            var part1missed = [];
+            var signmissed = [];
+            var part2missed = [];
+            var kidanswer = [];
+            var correctanswer = [];
+
             var result=0;
             var streaknum = 0;
             
@@ -144,8 +158,11 @@
             }
             var totalsolved = 0;
             var highscore = 0;
+            var numwrong = 0;
             function compare(){
                 var answers = document.getElementById("answer").textContent;
+                var probtable = document.getElementById("probtable");
+                var items = probtable.getElementsByTagName("h2");
                 
                 if(answers.substring(2) == result){
                     //document.getElementById("currentbest").style.visibility="hidden";
@@ -156,7 +173,18 @@
                     }
                 }else{
                     //document.getElementById("currentbest").style.visibility="visible";
-                    
+                    part1missed.push(items[0].textContent);
+                    signmissed.push(items[1].textContent);
+                    part2missed.push(items[2].textContent);
+                    kidanswer.push(document.getElementById("answer").textContent.substring(2));
+                    correctanswer.push(result);
+                    //alert(part1missed.toString());
+                    document.getElementById("part1miss").value = part1missed.toString();
+                    document.getElementById("signmiss").value = signmissed.toString();
+                    document.getElementById("part2miss").value = part2missed.toString();
+                    document.getElementById("kidanswer").value = kidanswer.toString();
+                    document.getElementById("correctanswer").value = correctanswer.toString();
+                    numwrong++;
                     streaknum=0;
                 }
                 //document.getElementById("totalnum").textContent = totalsolved;
@@ -166,6 +194,7 @@
                 document.getElementById("streakhs").value = streaknum;
                 document.getElementById("streak").textContent = streaknum;
                 document.getElementById("answer").textContent = "= ";
+                document.getElementById("numwrong").value=numwrong;
 
                 randomNum();
             }
@@ -175,6 +204,14 @@
 
     <% if(category === "three"){ %>
         <script>
+            var part1missed = [];
+            var signmissed = [];
+            var part2missed = [];
+            var sign2missed = [];
+            var part3missed = [];
+            var kidanswer = [];
+            var correctanswer = [];
+
             var result=0;
             var streaknum = 0;
             var languages = "<%- language %>";
@@ -324,6 +361,7 @@
             }
             var totalsolved = 0;
             var highscore = 0;
+            var numwrong = 0;
             function compare(){
                 var answers = document.getElementById("answer").textContent;
                 
@@ -336,6 +374,22 @@
                     }
                 }else{
                     //document.getElementById("currentbest").style.visibility="visible";
+                    part1missed.push(items[0].textContent);
+                    signmissed.push(items[1].textContent);
+                    part2missed.push(items[2].textContent);
+                    sign2missed.push(items[3].textContent);
+                    part3missed.push(items[4].textContent);
+                    kidanswer.push(document.getElementById("answer").textContent.substring(2));
+                    correctanswer.push(result);
+                    //alert(part1missed.toString());
+                    document.getElementById("part1miss").value = part1missed.toString();
+                    document.getElementById("signmiss").value = signmissed.toString();
+                    document.getElementById("part2miss").value = part2missed.toString();
+                    document.getElementById("sign2miss").value = sign2missed.toString();
+                    document.getElementById("part3miss").value = part3missed.toString();
+                    document.getElementById("kidanswer").value = kidanswer.toString();
+                    document.getElementById("correctanswer").value = correctanswer.toString();
+                    numwrong++;
                     streaknum=0;
                 }
                 //document.getElementById("totalnum").textContent = totalsolved;
@@ -345,6 +399,7 @@
                 document.getElementById("streakhs").value = streaknum;
                 document.getElementById("answer").textContent = "= ";
                 document.getElementById("streak").textContent = streaknum;
+                document.getElementById("numwrong").value=numwrong;
 
                 randomNum();
             }
