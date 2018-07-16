@@ -171,12 +171,15 @@
             if(languages == "en"){
                 if(category.substring(3)==="as"){
                     document.getElementById("category").textContent = "Addition/Subtraction: \r\n" + category.substring(2,3)+ " NUMBERS";
+                    document.getElementById("category").style.color="mediumseagreen";
                 }
                 if(category.substring(3)==="md"){
                     document.getElementById("category").textContent = "Multiplication/Division: \r\n" + category.substring(2,3)+ " NUMBERS";
+                    document.getElementById("category").style.color="royalblue";
                 }
                 if(category.substring(3)==="rm"){
                     document.getElementById("category").textContent = "Remainder: " + category.substring(2,3)+ " NUMBERS";
+                    document.getElementById("category").style.color="slateblue";
                 }
             }
             if(languages == "zh"){
@@ -190,12 +193,15 @@
                 }
                 if(category.substring(3)==="as"){
                     document.getElementById("category").textContent = "加减: " + front + "个数";
+                    document.getElementById("category").style.color="mediumseagreen";
                 }
                 if(category.substring(3)==="md"){
                     document.getElementById("category").textContent = "乘除: " + front + "个数";
+                    document.getElementById("category").style.color="royalblue";
                 }
                 if(category.substring(3)==="rm"){
                     document.getElementById("category").textContent = "余数" + front + "个数";
+                    document.getElementById("category").style.color="slateblue";
                 }
                 document.getElementById("category").style.fontWeight = "bold";
             }

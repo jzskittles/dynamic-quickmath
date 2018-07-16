@@ -12,14 +12,11 @@ app.get('/', function (req, res) {
   res.render('login', {logging: null, language: "en", error: null});
 })
 
-
-
-//open the database
 let db = new sqlite3.Database('./db/quickmath.db', sqlite3.OPEN_READWRITE, (err) => {
     if(err){
         return console.error(err.message);
     }
-    console.log('Connected to the quickmath database.');
+    //console.log('Connected to the quickmath database.');
 });
 var lang="";
 
@@ -27,9 +24,7 @@ app.post('/', function (req, res) {
   let username = req.body.username;
   let password = req.body.password;
   let language = req.body.languages;
-  console.log(language);
-  
-  
+  //console.log(language);
 
   var exists = false;
   db.all(`SELECT Username username, Password password, Language language FROM users`, [], (err, rows) =>{
@@ -40,7 +35,7 @@ app.post('/', function (req, res) {
         if(req.body.username === row.username){
             exists = true;
             if(req.body.password === row.password){
-                console.log("Logging in.");
+                //console.log("Logging in.");
                 if(language === undefined){
                     language = row.language;
                 }
@@ -110,6 +105,7 @@ app.post('/language', function (req, res) {
         var categories = [];
         var numsolveds = [];
         var timespent = [];
+        var customIDs = [];
         db.all(`SELECT * FROM problog WHERE username = ? ORDER BY timestart DESC`, [req.body.username], (err, rows) =>{
             if(err){
             return console.error(err.message);
@@ -123,41 +119,94 @@ app.post('/language', function (req, res) {
                     var d1 = new Date(row.timestart);
                     var seconds = (d2-d1)/1000;
                     timespent.push(seconds);
+                    customIDs.push(row.customID);
                 }); 
-                res.render('log',{username: req.body.username, language:lang, selection:false, datauser: usernames, datatstart: timestarts, category: categories, num: numsolveds, datatspent: timespent, logtype: "Full"});
+                res.render('log',{username: req.body.username, language:lang, selection:false, customID:customIDs, datauser: usernames, datatstart: timestarts, category: categories, num: numsolveds, datatspent: timespent, clicked:null, logtype: "Full"});
             }
         });
     }
     if(req.body.logtype === "Daily"){
-        db.all(`SELECT * FROM dailylog WHERE username = ? ORDER BY date DESC`, [req.body.username], (err, rows) =>{// WHERE timestart >= CURDATE()
-            if(err){
-              return console.error(err.message);
-            }else{
-                var totaltime = [];
-                var totalsolved = [];
-                var totalwrong = [];
-                var hs2as = [];
-                var hs3as = [];
-                var hs2md = [];
-                var hs3md = [];
-                var hs2rm = [];
-                var hs3rm = [];
-                var dates = [];
-                rows.forEach((row)=>{
-                    dates.push(row.date);
-                    totaltime.push(row.totaltime); 
-                    totalwrong.push(row.totalwrong);
-                    hs2as.push(row.hs2as);               
-                    hs3as.push(row.hs3as);               
-                    hs2md.push(row.hs2md);               
-                    hs3md.push(row.hs3md);               
-                    hs2rm.push(row.hs2rm);               
-                    hs3rm.push(row.hs3rm);
-                    totalsolved.push(row.hs2as+row.hs3as+row.hs2md+row.hs3md+row.hs2rm+row.hs3rm);
-                }); 
-                res.render('log',{username: req.body.username, language:lang, selection:false, totalsolved: totalsolved, dates: dates, totaltime: totaltime, totalwrong:totalwrong, hs2as:hs2as, hs3as:hs3as, hs2md:hs2md, hs3md:hs3md, hs2rm:hs2rm, hs3rm:hs3rm, logtype: "Daily"});
-            }
-        });
+        if(req.body.clicked!==null){
+            //var usernames = []
+            var hs2asmiss = 0;
+            var hs3asmiss = 0;
+            var hs2mdmiss = 0;
+            var hs3mdmiss = 0;
+            var hs2rmmiss = 0;
+            var hs3rmmiss = 0;
+            console.log(req.params.name);
+            db.all(`SELECT * FROM probsmissed WHERE (username = ?)`, [req.body.username], (err, rows) =>{
+                if(err){
+                return console.error(err.message);
+                }else{
+                    rows.forEach((row)=>{
+                        var timestamp = row.timestamp;
+                        var arrdate =timestamp.split(" ");
+                        if(arrdate[0] === req.params.name){
+                            //console.log(row.timestamp);
+                            //usernames.push(row.username);
+                            var part1count = row.part1;
+                            var nummissed = [];
+                            if(part1count.length>3) {
+                                nummissed = part1count.split(",");
+                            }else{
+                                nummissed = [1];
+                            }
+                            if(row.category === "hs2as"){
+                                hs2asmiss+=nummissed.length;
+                            }
+                            if(row.category === "hs3as"){
+                                hs3asmiss+=nummissed.length;
+                            }
+                            if(row.category === "hs2md"){
+                                hs2mdmiss+=nummissed.length;
+                            }
+                            if(row.category === "hs3md"){
+                                hs3mdmiss+=nummissed.length;
+                            }
+                            if(row.category === "hs2rm"){
+                                hs2rmmiss+=nummissed.length;
+                            }
+                            if(row.category === "hs3rm"){
+                                hs3rmmiss+=nummissed.length;
+                            }
+                        }
+                    }); 
+                }
+            });
+    
+            db.all(`SELECT * FROM dailylog WHERE username = ? ORDER BY date DESC`, [req.body.username], (err, rows) =>{// WHERE timestart >= CURDATE()
+                if(err){
+                return console.error(err.message);
+                }else{
+                    var totaltime = [];
+                    var totalsolved = [];
+                    var totalwrong = [];
+                    var hs2as = [];
+                    var hs3as = [];
+                    var hs2md = [];
+                    var hs3md = [];
+                    var hs2rm = [];
+                    var hs3rm = [];
+                    var dates = [];
+                    var customID = [];
+                    rows.forEach((row)=>{
+                        dates.push(row.date);
+                        totaltime.push(row.totaltime);
+                        totalwrong.push(row.totalwrong); 
+                        hs2as.push(row.hs2as);               
+                        hs3as.push(row.hs3as);               
+                        hs2md.push(row.hs2md);               
+                        hs3md.push(row.hs3md);               
+                        hs2rm.push(row.hs2rm);               
+                        hs3rm.push(row.hs3rm);
+                        totalsolved.push(row.hs2as+row.hs3as+row.hs2md+row.hs3md+row.hs2rm+row.hs3rm);
+                        customID.push(row.customID);
+                    }); 
+                    res.render('log',{username: req.body.username, language:lang, selection:false, totalsolved: totalsolved, totalwrong:totalwrong, customID:customID, thisID: req.params.name, dates: dates, totaltime: totaltime, hs2as:hs2as, hs3as:hs3as, hs2md:hs2md, hs3md:hs3md, hs2rm:hs2rm, hs3rm:hs3rm, hs2asmiss:hs2asmiss, hs3asmiss:hs3asmiss, hs2mdmiss:hs2mdmiss, hs3mdmiss:hs3mdmiss, hs2rmmiss:hs2rmmiss, hs3rmmiss:hs3rmmiss, clicked:"no", logtype: "Daily"});
+                }
+            });
+        }
     }
     if(req.body.title === "Leaderboard"){
         if(req.body.selection === "selection"){
@@ -680,6 +729,14 @@ app.post('/back', function (req, res) {
                             //res.render('problem', {category: "two", sign: "+", language:lang, hs:"hs2as", username:username});
                         }
                     });
+                    db.run(`DELETE FROM probsmissed WHERE customID = ?`, [req.body.session], function(err) {
+                        if (err) {
+                            return console.log(err.message);
+                        }else{
+                            console.log(`A row has been deleted.`);
+                            //res.render('problem', {category: "two", sign: "+", language:lang, hs:"hs2as", username:username});
+                        }
+                    });
                 }
                 if(rowatr < req.body.higheststreak){
                     sql = `UPDATE users 
@@ -710,8 +767,38 @@ app.post('/backl', function(req, res){
         res.render('home',{username: req.body.username, language:lang, selection: true});
     }
     if(req.body.selection === "log"){
-        res.render('home',{username: req.body.username, language:lang, selection: false});
+        if(req.body.logtype === "Wrong"){
+            var usernames = [];
+            var timestarts = [];
+            var categories = [];
+            var numsolveds = [];
+            var timespent = [];
+            var customIDs = [];
+            db.all(`SELECT * FROM problog WHERE username = ? ORDER BY timestart DESC`, [req.body.username], (err, rows) =>{
+                if(err){
+                return console.error(err.message);
+                }else{
+                    rows.forEach((row)=>{
+                        //console.log(row.username);
+                        usernames.push(row.username);
+                        timestarts.push(row.timestart);
+                        categories.push(row.category);
+                        numsolveds.push(row.numsolved);
+                        var d2 = new Date(row.timeend);
+                        var d1 = new Date(row.timestart);
+                        var seconds = (d2-d1)/1000;
+                        timespent.push(seconds);
+                        customIDs.push(row.customID);
+                    }); 
+                    res.render('log',{username: req.body.username, language:lang, selection:false, datauser: usernames, datatstart: timestarts, category: categories, num: numsolveds, datatspent: timespent, customID:customIDs, clicked:null, logtype: "Full"});
+                }
+            });
+        }
+        else{
+            res.render('home',{username: req.body.username, language:lang, selection: false});
+        }
     }
+    
 });
 
 app.post('/logout', function(req, res){
@@ -755,7 +842,7 @@ app.post('/full', function(req, res){
                 timespent.push(seconds);
                 customIDs.push(row.customID);
             }); 
-            res.render('log',{username: req.body.username, language:lang, selection:false, datauser: usernames, datatstart: timestarts, category: categories, num: numsolveds, datatspent: timespent, customID:customIDs, logtype: "Full"});
+            res.render('log',{username: req.body.username, language:lang, selection:false, datauser: usernames, datatstart: timestarts, category: categories, num: numsolveds, datatspent: timespent, customID:customIDs, clicked:"no", logtype: "Full"});
         }
     });
 });
@@ -775,6 +862,7 @@ app.post('/daily', function(req, res){//WHERE timestamp >= CURDATE()
             var hs2rm = [];
             var hs3rm = [];
             var dates = [];
+            var customID = [];
             rows.forEach((row)=>{
                 dates.push(row.date);
                 totaltime.push(row.totaltime);
@@ -786,33 +874,9 @@ app.post('/daily', function(req, res){//WHERE timestamp >= CURDATE()
                 hs2rm.push(row.hs2rm);               
                 hs3rm.push(row.hs3rm);
                 totalsolved.push(row.hs2as+row.hs3as+row.hs2md+row.hs3md+row.hs2rm+row.hs3rm);
-
-                /*if(row.category==="hs2as"){
-                    numsolveds[0]+=row.numsolved;
-                }
-                if(row.category==="hs3as"){
-                    numsolveds[1]+=row.numsolved;
-                }
-                if(row.category==="hs2md"){
-                    numsolveds[2]+=row.numsolved;
-                }
-                if(row.category==="hs3md"){
-                    numsolveds[3]+=row.numsolved;
-                }
-                if(row.category==="hs2rm"){
-                    numsolveds[4]+=row.numsolved;
-                }
-                if(row.category==="hs3rm"){
-                    numsolveds[5]+=row.numsolved;
-                }*/
-                //timestarts.push(row.timestart);
-                //totalsolved[dates.length-1]=totalsolved[dates.length-1]+row.numsolved;
-                /*var d2 = new Date(row.timeend);
-                var d1 = new Date(row.timestart);
-                var seconds = (d2-d1)/1000;
-                totaltime+=seconds;*/
+                customID.push(row.customID);
             }); 
-            res.render('log',{username: req.body.username, language:lang, selection:false, totalsolved: totalsolved, totalwrong:totalwrong, dates: dates, totaltime: totaltime, hs2as:hs2as, hs3as:hs3as, hs2md:hs2md, hs3md:hs3md, hs2rm:hs2rm, hs3rm:hs3rm, logtype: "Daily"});
+            res.render('log',{username: req.body.username, language:lang, selection:false, totalsolved: totalsolved, totalwrong:totalwrong, customID:customID, thisID:null, dates: dates, totaltime: totaltime, hs2as:hs2as, hs3as:hs3as, hs2md:hs2md, hs3md:hs3md, hs2rm:hs2rm, hs3rm:hs3rm, hs2asmiss:null, hs3asmiss:null, hs2mdmiss:null, hs3mdmiss:null, hs2rmmiss:null, hs3rmmiss:null, clicked:"no", logtype: "Daily"});
         }
     });
 });
@@ -847,16 +911,137 @@ app.post('/getWrong/:id', function(req, res){
                 kidanswers.push(row.kidanswer);
                 correctanswers.push(row.correctanswer);
             }); 
+            if(part1missed.length===0){
+                console.log("noooo");
+                res.render('log',{username: req.body.username, language:lang, selection:false, category:null, timestamp:null, part1miss:null, signmiss:null, part2miss:null, sign2miss:null, part3miss:null, kidanswer: null, correctanswer: null, clicked:null, logtype: "Wrong"});
+            }
             if(categorys.substring(2,3)==="2"){
                 console.log(part1missed.toString());
                 console.log(timestamp);
-                res.render('log',{username: req.body.username, language:lang, selection:false, category:categorys, timestamp:timestamp, part1miss:part1missed, signmiss:signmissed, part2miss:part2missed, sign2miss:null, part3miss:null, kidanswer: kidanswers, correctanswer: correctanswers, logtype: "Wrong"});
+                res.render('log',{username: req.body.username, language:lang, selection:false, category:categorys, timestamp:timestamp, part1miss:part1missed, signmiss:signmissed, part2miss:part2missed, sign2miss:null, part3miss:null, kidanswer: kidanswers, correctanswer: correctanswers, clicked:null, logtype: "Wrong"});
             }
             if(categorys.substring(2,3)==="3"){
-                res.render('log',{username: req.body.username, language:lang, selection:false, category:categorys, timestamp:timestamp, part1miss:part1missed, signmiss:signmissed, part2miss:part2missed, sign2miss:sign2missed, part3miss:part3missed, kidanswer: kidanswers, correctanswer: correctanswers, logtype: "Wrong"});
+                res.render('log',{username: req.body.username, language:lang, selection:false, category:categorys, timestamp:timestamp, part1miss:part1missed, signmiss:signmissed, part2miss:part2missed, sign2miss:sign2missed, part3miss:part3missed, kidanswer: kidanswers, correctanswer: correctanswers, clicked:null, logtype: "Wrong"});
             }
         }
     });
+});
+
+app.post('/getCategory/:name', function(req, res){
+    if(req.body.clicked==="no"){
+        //var usernames = []
+        var hs2asmiss = 0;
+        var hs3asmiss = 0;
+        var hs2mdmiss = 0;
+        var hs3mdmiss = 0;
+        var hs2rmmiss = 0;
+        var hs3rmmiss = 0;
+        console.log(req.params.name);
+        db.all(`SELECT * FROM probsmissed WHERE (username = ?)`, [req.body.username], (err, rows) =>{
+            if(err){
+            return console.error(err.message);
+            }else{
+                rows.forEach((row)=>{
+                    var timestamp = row.timestamp;
+                    var arrdate =timestamp.split(" ");
+                    if(arrdate[0] === req.params.name){
+                        //console.log(row.timestamp);
+                        //usernames.push(row.username);
+                        var part1count = row.part1;
+                        var nummissed = [];
+                        if(part1count.length>3) {
+                            nummissed = part1count.split(",");
+                        }else{
+                            nummissed = [1];
+                        }
+                        if(row.category === "hs2as"){
+                            hs2asmiss+=nummissed.length;
+                        }
+                        if(row.category === "hs3as"){
+                            hs3asmiss+=nummissed.length;
+                        }
+                        if(row.category === "hs2md"){
+                            hs2mdmiss+=nummissed.length;
+                        }
+                        if(row.category === "hs3md"){
+                            hs3mdmiss+=nummissed.length;
+                        }
+                        if(row.category === "hs2rm"){
+                            hs2rmmiss+=nummissed.length;
+                        }
+                        if(row.category === "hs3rm"){
+                            hs3rmmiss+=nummissed.length;
+                        }
+                    }
+                }); 
+            }
+        });
+
+        db.all(`SELECT * FROM dailylog WHERE username = ? ORDER BY date DESC`, [req.body.username], (err, rows) =>{// WHERE timestart >= CURDATE()
+            if(err){
+            return console.error(err.message);
+            }else{
+                var totaltime = [];
+                var totalsolved = [];
+                var totalwrong = [];
+                var hs2as = [];
+                var hs3as = [];
+                var hs2md = [];
+                var hs3md = [];
+                var hs2rm = [];
+                var hs3rm = [];
+                var dates = [];
+                var customID = [];
+                rows.forEach((row)=>{
+                    dates.push(row.date);
+                    totaltime.push(row.totaltime);
+                    totalwrong.push(row.totalwrong); 
+                    hs2as.push(row.hs2as);               
+                    hs3as.push(row.hs3as);               
+                    hs2md.push(row.hs2md);               
+                    hs3md.push(row.hs3md);               
+                    hs2rm.push(row.hs2rm);               
+                    hs3rm.push(row.hs3rm);
+                    totalsolved.push(row.hs2as+row.hs3as+row.hs2md+row.hs3md+row.hs2rm+row.hs3rm);
+                    customID.push(row.customID);
+                }); 
+                res.render('log',{username: req.body.username, language:lang, selection:false, totalsolved: totalsolved, totalwrong:totalwrong, customID:customID, thisID: req.params.name, dates: dates, totaltime: totaltime, hs2as:hs2as, hs3as:hs3as, hs2md:hs2md, hs3md:hs3md, hs2rm:hs2rm, hs3rm:hs3rm, hs2asmiss:hs2asmiss, hs3asmiss:hs3asmiss, hs2mdmiss:hs2mdmiss, hs3mdmiss:hs3mdmiss, hs2rmmiss:hs2rmmiss, hs3rmmiss:hs3rmmiss, clicked:"clicked", logtype: "Daily"});
+            }
+        });
+    }else{
+        db.all(`SELECT * FROM dailylog WHERE username = ? ORDER BY date DESC`, [req.body.username], (err, rows) =>{// WHERE timestart >= CURDATE()
+            if(err){
+            return console.error(err.message);
+            }else{
+                var totaltime = [];
+                var totalsolved = [];
+                var totalwrong = [];
+                var hs2as = [];
+                var hs3as = [];
+                var hs2md = [];
+                var hs3md = [];
+                var hs2rm = [];
+                var hs3rm = [];
+                var dates = [];
+                var customID = [];
+                rows.forEach((row)=>{
+                    dates.push(row.date);
+                    totaltime.push(row.totaltime);
+                    totalwrong.push(row.totalwrong); 
+                    hs2as.push(row.hs2as);               
+                    hs3as.push(row.hs3as);               
+                    hs2md.push(row.hs2md);               
+                    hs3md.push(row.hs3md);               
+                    hs2rm.push(row.hs2rm);               
+                    hs3rm.push(row.hs3rm);
+                    totalsolved.push(row.hs2as+row.hs3as+row.hs2md+row.hs3md+row.hs2rm+row.hs3rm);
+                    customID.push(row.customID);
+                }); 
+                res.render('log',{username: req.body.username, language:lang, selection:false, totalsolved: totalsolved, totalwrong:totalwrong, customID:customID, thisID: null, dates: dates, totaltime: totaltime, hs2as:hs2as, hs3as:hs3as, hs2md:hs2md, hs3md:hs3md, hs2rm:hs2rm, hs3rm:hs3rm, hs2asmiss:hs2asmiss, hs3asmiss:hs3asmiss, hs2mdmiss:hs2mdmiss, hs3mdmiss:hs3mdmiss, hs2rmmiss:hs2rmmiss, hs3rmmiss:hs3rmmiss, clicked:"no", logtype: "Daily"});
+            }
+        });
+    }
+    
 });
 
 app.listen(3000, function () {

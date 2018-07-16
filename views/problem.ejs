@@ -364,6 +364,48 @@
             var numwrong = 0;
             function compare(){
                 var answers = document.getElementById("answer").textContent;
+                var probtable = document.getElementById("probtable");
+                var items = probtable.getElementsByTagName("h2");
+                
+                if(answers.substring(2) == result){
+                    //document.getElementById("currentbest").style.visibility="hidden";
+                    streaknum++;
+                    totalsolved++;
+                    if(streaknum>highscore){
+                        highscore = streaknum;
+                    }
+                }else{
+                    //document.getElementById("currentbest").style.visibility="visible";
+                    part1missed.push(items[0].textContent);
+                    signmissed.push(items[1].textContent);
+                    part2missed.push(items[2].textContent);
+                    kidanswer.push(document.getElementById("answer").textContent.substring(2));
+                    correctanswer.push(result);
+                    //alert(part1missed.toString());
+                    document.getElementById("part1miss").value = part1missed.toString();
+                    document.getElementById("signmiss").value = signmissed.toString();
+                    document.getElementById("part2miss").value = part2missed.toString();
+                    document.getElementById("kidanswer").value = kidanswer.toString();
+                    document.getElementById("correctanswer").value = correctanswer.toString();
+                    numwrong++;
+                    streaknum=0;
+                }
+                //document.getElementById("totalnum").textContent = totalsolved;
+                document.getElementById("higheststreak").value = highscore;
+                document.getElementById("hstreak").textContent = highscore;
+                document.getElementById("streaktotal").value = totalsolved;
+                document.getElementById("streakhs").value = streaknum;
+                document.getElementById("streak").textContent = streaknum;
+                document.getElementById("answer").textContent = "= ";
+                document.getElementById("numwrong").value=numwrong;
+            }
+            var totalsolved = 0;
+            var highscore = 0;
+            var numwrong = 0;
+            function compare(){
+                var answers = document.getElementById("answer").textContent;
+                var probtable = document.getElementById("probtable");
+                var items = probtable.getElementsByTagName("h2");
                 
                 if(answers.substring(2) == result){
                     //document.getElementById("currentbest").style.visibility="hidden";
