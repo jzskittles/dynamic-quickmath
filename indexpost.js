@@ -8,11 +8,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
 
 const pool = new Pool({
-    host:'ec2-107-22-169-45.compute-1.amazonaws.com',
-    port: 5432,
-    database: 'dc1bbt1b65la77',
-    user: 'hdqiqexvzioteh',
-    password: 'ad9e97f78a087e518b74e062216de40e3167efcc705639706aa2ceaf69c10e70',
+    connectionString: process.env.DATABASE_URL,
     ssl:true
 });
 
