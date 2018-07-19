@@ -19,6 +19,9 @@ button {
     -webkit-appearance: none;
     border-radius: 0;
     text-align:center;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
 }
 .prob{
     font-size:48px;
