@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const bodyParser = require('body-parser');
-const { Pool} = require('pg');
+const {Pool} = require('pg');
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
