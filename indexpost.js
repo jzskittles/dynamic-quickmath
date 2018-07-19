@@ -814,6 +814,7 @@ app.post('/logout', function(req, res){
     else if(lang === "zh"){
         res.render('login', {logging: req.body.username +" 下线了.", language:lang, error: null});
     }else{
+        lang = "en";
         res.render('login',{logging: req.body.username +" logged out.", language:lang, error: null});
     }
 });
