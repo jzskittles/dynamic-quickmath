@@ -4,7 +4,7 @@
   "description": "dynamic version of quickmathweb game",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node indexpost.js"
   },
   "repository": {
     "type": "git",
@@ -26,7 +26,8 @@
     "ejs": "^2.6.1",
     "express": "4.16.3",
     "node-gyp": "^3.7.0",
-    "node-pre-gyp": "^0.10.3"
+    "node-pre-gyp": "^0.10.3",
+    "pg": "^7.4.3"
   },
   "engines": {
     "node": "8.11.3"

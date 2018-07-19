@@ -176,7 +176,12 @@
             var datatspent = "<%- datatspent %>";
             var arrtspent = datatspent.split(",");
             var dataIDs = "<%- customID %>";
-            var arrIDs = dataIDs.split(",");
+            var arrIDs=[];
+            if(dataIDs.includes(","))
+                arrIDs = dataIDs.split(",");
+            else{
+                arrIDs.push(dataIDs);
+            }
 
             var container = document.getElementById("container");
             if(datauser===""){
@@ -191,8 +196,10 @@
                 document.getElementById("nolog").className="ghost-button";
             }else{
                 var thisdate = "";
-                for(i=0;i<arrusers.length;i++){
+                for(i=0;i<arrIDs.length;i++){
                     var datetime = arrtstart[i].split(" ");
+                    //console.log(datetime);
+                    //console.log(datetime[0]);
                     var date = datetime[0];
                     if(date!==thisdate){
                         var newday = document.createElement("h2");
@@ -324,7 +331,6 @@
                 var hs2rmmiss = "<%- hs2rmmiss %>";
                 var hs3rmmiss = "<%- hs3rmmiss %>";
                 var thisID = "<%- thisID %>";
-
             }
             
 
