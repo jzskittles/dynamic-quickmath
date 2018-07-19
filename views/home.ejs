@@ -84,10 +84,10 @@
             <h1 id="title">Quick Math</h1>
         </div>
         <% if(selection){ %>
-            <% include /views/partials/selection %>
+            <% include ../views/partials/selection %>
         <% } %>
         <% if(!selection){ %>
-            <% include /views/partials/logpg %>
+            <% include ../views/partials/logpg %>
         <% } %>
 
         <input id="logout" class="ghost-button" name="logout" type="submit" style="font-size:20px;" value="Log Out" formaction="/logout">
