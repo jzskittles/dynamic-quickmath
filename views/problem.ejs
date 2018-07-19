@@ -86,15 +86,15 @@
             if(languages==="en"){
                 document.getElementById("enter").textContent="ENTER";
                 document.getElementById("back").value = "Back";
-                document.getElementById("hstreak").textContent = "Highest Streak: ";
+                document.getElementById("currentbest").textContent = "Highest Streak: ";
             }
             if(languages==="zh"){
                 document.getElementById("enter").textContent="抢答";
                 document.getElementById("enter").style.fontWeight="bold";
                 document.getElementById("back").value = "退出";
                 document.getElementById("back").style.fontWeight="bold";
-                document.getElementById("hstreak").textContent = "最高记录: ";
-                document.getElementById("hstreak").style.fontWeight="bold";
+                document.getElementById("currentbest").textContent = "最高记录: ";
+                document.getElementById("currentbest").style.fontWeight="bold";
             }
             function addText(clicked_id) {
                 if(document.getElementById("answer").textContent.length<12)
